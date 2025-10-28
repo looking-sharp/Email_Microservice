@@ -1,0 +1,164 @@
+body {
+    font-family: "Courier New", Courier, monospace;
+    background: #1e1e1e;
+    color: #dcdcdc;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #ffffff;
+}
+
+.email-entry {
+    background: #252526;
+    border-left: 4px solid #3fa34d;
+    margin: 15px 0;
+    padding: 10px 15px;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.email-entry.fail {
+    border-left-color: #e74c3c;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    color: #9cdcfe;
+}
+
+.arrow {
+    transition: transform 0.2s;
+    font-size: 14px;
+}
+.arrow.open {
+    transform: rotate(90deg);
+}
+
+.status {
+    color: #ce9178;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.details {
+    display: none;
+    margin-top: 8px;
+    padding: 10px;
+    background: #1b1b1b;
+    border-radius: 5px;
+    border: 1px solid #333;
+}
+
+.json-key {
+    color: #9cdcfe;
+}
+.json-string {
+    color: #ce9178;
+}
+.json-number {
+    color: #b5cea8;
+}
+.json-section {
+    margin-left: 20px;
+}
+.email-body {
+    background: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 5px;
+    margin-top: 10px;
+    padding: 10px;
+    color: #cccccc;
+}
+
+.filter-text {
+    background-color: rgba(24, 29, 32, 1);
+    color: rgba(184, 200, 217, 1);
+    border: none;
+    outline: none;
+    box-shadow: none;
+    min-width: 0;
+    width: 98%;
+}
+
+.toolbar {
+    display: flex;
+    height: 22px;
+    padding: 1px;
+    padding-inline-start: 2px;
+    background: rgb(41, 41, 41)
+}
+
+.toolbar .btn {
+    margin-inline-end: 5px;
+    color: rgb(177,177,179);
+    background: #38383d;
+    border: none;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    padding: 0 3px;
+    border-radius: 2px;
+    outline-offset: -1px;
+}
+
+.toolbar svg {
+    position: absolute;
+    background: top;
+    width: 20px;
+    fill: white;
+    margin-left: 148px;
+    z-index: 100;
+}
+
+.autocomplete {
+    background-color: rgba(24, 29, 32, 1);
+    color: rgba(184, 200, 217, 1);
+    border: none;
+    outline: none;
+    box-shadow: none;
+    min-width: 0;
+    width: 100%;
+    padding-inline-start: 22px;
+    background-position: 7px center;
+    background-size: 12px;
+    background-repeat: no-repeat;
+    position: relative;
+    display: inline-block;
+}
+
+.autocomplete-items {
+  position: absolute;
+  border: 1px solid #544d4d;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+
+.autocomplete-items div {
+  padding: 2px;
+  cursor: pointer;
+  background-color: rgba(24, 29, 32, 1);
+  border-bottom: 1px solid #544d4d;
+  font-size: small;
+}
+
+.autocomplete-items div:hover {
+  background-color: rgb(46, 53, 58);
+}
+
+.autocomplete-active {
+  background-color: rgb(73, 83, 90) !important;
+  color: #ffffff;
+}

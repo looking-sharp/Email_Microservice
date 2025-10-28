@@ -1,0 +1,90 @@
+[
+  {
+    "email_id": "a7d3c1b2-8f23-4b61-81a4-924f01d91b3a",
+    "date_sent": "2025-10-27",
+    "time_sent": "08:42:15",
+    "ip_sent_from": "203.0.113.15",
+    "recipients": ["marketing@example.com", "sales@example.com"],
+    "subject_line": "Weekly Marketing Metrics Report",
+    "body": "<p>Hi team,</p><p>Please find attached the latest marketing performance report for this week. Let’s discuss key takeaways during the next sync-up call.</p><p>Regards,<br>Alice</p>",
+    "status_code": 200,
+    "status_message": "Message Sent"
+  },
+  {
+    "email_id": "c5f1e7a9-72b8-4904-b1a9-5a47b9c7a64e",
+    "date_sent": "2025-10-26",
+    "time_sent": "17:10:03",
+    "ip_sent_from": "198.51.100.88",
+    "recipients": ["hr@example.com"],
+    "subject_line": "Updated Employee Handbook",
+    "body": "<p>Hello,</p><p>The updated employee handbook for 2025 is now available. Please review and acknowledge receipt by the end of this week.</p><p>Best,<br>HR Department</p>",
+    "status_code": 200,
+    "status_message": "Message Sent"
+  },
+  {
+    "email_id": "e3b5d9c7-1192-4e65-9c42-64fb5e2199a8",
+    "date_sent": "2025-10-25",
+    "time_sent": "11:59:48",
+    "ip_sent_from": "192.0.2.110",
+    "recipients": ["support@example.com"],
+    "subject_line": "Issue with Payment Processing",
+    "body": "<p>Hi Support,</p><p>I’m experiencing an issue while trying to process payments on the checkout page. The transaction fails with a timeout error.</p><p>Could you please look into this?</p><p>Thanks,<br>Bob</p>",
+    "status_code": 404,
+    "status_message": "Failed to send, ERROR INFORMATION"
+  },
+  {
+    "email_id": "d2c7e9f3-98b1-47c3-8d73-f21a6c9e25b4",
+    "date_sent": "2025-10-24",
+    "time_sent": "09:18:57",
+    "ip_sent_from": "203.0.113.66",
+    "recipients": ["it@example.com", "admin@example.com"],
+    "subject_line": "Server Maintenance Notification",
+    "body": "<p>Dear all,</p><p>We will perform scheduled maintenance on the internal servers tonight from 11 PM to 1 AM. Expect temporary downtime during this window.</p><p>Regards,<br>IT Department</p>",
+    "status_code": 200,
+    "status_message": "Message Sent"
+  },
+  {
+    "email_id": "f6a8c4d1-3b27-4e94-8c41-61f1b2c3a4e5",
+    "date_sent": "2025-10-23",
+    "time_sent": "20:22:10",
+    "ip_sent_from": "198.51.100.23",
+    "recipients": ["newsletter@subscribers.com"],
+    "subject_line": "October Product Updates & Announcements",
+    "body": "<h2>October Highlights</h2><ul><li>New product features</li><li>Upcoming webinars</li><li>Customer success stories</li></ul><p>Read the full blog post <a href='https://example.com/blog/october-update'>here</a>.</p>",
+    "status_code": 200,
+    "status_message": "Message Sent"
+  },
+  {
+    "email_id": "b1d2a8f9-5c44-4b22-9f91-0a4d67f3c812",
+    "date_sent": "2025-10-22",
+    "time_sent": "15:06:41",
+    "ip_sent_from": "192.0.2.74",
+    "recipients": ["devteam@example.com"],
+    "subject_line": "Code Review Reminder",
+    "body": "<p>Hey team,</p><p>Don’t forget to review the latest pull requests before the end of the day so we can merge updates for tomorrow’s build.</p><p>Cheers,<br>DevOps</p>",
+    "status_code": 200,
+    "status_message": "Message Sent"
+  },
+  {
+    "email_id": "a4e5c7f9-7b61-4930-bf2c-27a3e6b5a8d0",
+    "date_sent": "2025-10-21",
+    "time_sent": "12:25:36",
+    "ip_sent_from": "203.0.113.99",
+    "recipients": ["john.doe@example.com"],
+    "subject_line": "Invoice #5839 - Payment Failed",
+    "body": "<p>Dear John,</p><p>Your recent payment attempt for invoice #5839 was unsuccessful. Please verify your payment details or contact support.</p><p>Thank you,<br>Billing Team</p>",
+    "status_code": 401,
+    "status_message": "Failed to send, ERROR INFORMATION"
+  },
+  {
+    "email_id": "c9d8f2b1-4a67-4f11-90e3-ef3a4c9e5b2f",
+    "date_sent": "2025-10-20",
+    "time_sent": "07:43:11",
+    "ip_sent_from": "198.51.100.55",
+    "recipients": ["staff@example.com"],
+    "subject_line": "Company Holiday Schedule 2025",
+    "body": "<p>Good morning,</p><p>The 2025 company holiday schedule has been published. Please review it on the intranet portal.</p><p>Regards,<br>HR Team</p>",
+    "status_code": 200,
+    "status_message": "Message Sent"
+  }
+]

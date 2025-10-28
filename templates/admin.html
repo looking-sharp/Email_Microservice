@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<head>
+    <title>Admin Pannel</title>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/admin.css') }}">
+</head>
+<body>
+    {% if email_data | length == 0 %}
+    <span class="json-key">"message"</span>: <span class="json-string">"No emails found"</span>
+    {% else %}
+        <div class="toolbar">
+            <button class="btn" id="colapseBtn">Colapse All</button>
+            <button class="btn" id="expandBtn">Expand All</button>
+            <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" fill="#b8c8d9"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path fill="#777f87" d="M384 523.392V928a32 32 0 0 0 46.336 28.608l192-96A32 32 0 0 0 640 832V523.392l280.768-343.104a32 32 0 1 0-49.536-40.576l-288 352A32 32 0 0 0 576 512v300.224l-128 64V512a32 32 0 0 0-7.232-20.288L195.52 192H704a32 32 0 1 0 0-64H128a32 32 0 0 0-24.768 52.288L384 523.392z"></path></g></svg>
+            <div class="autocomplete">
+                <input type="text" placeholder='Filter Emails (e.g. "field": value)' class="filter-text" id="filter-text">
+            </div>
+            <button class="btn" id="searchBtn">Search</button>
+        </div>
+        {% for email in email_data %}
+        {% set succeed = email.status_code == 200 %}
+        <div class="email-entry {{ 'succeed' if succeed else 'fail' }}">
+        <div class="header" onclick="toggleDetails('{{ email.email_id }}')">
+            <span class="monospace-text">
+                <b>Email ID:</b> {{ email.email_id }}
+            </span>
+            <span class="status monospace-text">
+                {{ email.status_code }}
+            </span>
+            <span class="arrow" id="arrow-{{ email.email_id }}">▶</span>
+        </div>
+        <div class="details" id="details-{{ email.email_id }}" style="display: none;">
+            <div class="json-section">
+                {<br>
+                &nbsp;&nbsp;<span class="json-key">"status_code"</span>: 
+                <span class="json-number status_code">{{ email.status_code }}</span>,<br>
+
+                &nbsp;&nbsp;<span class="json-key">"status_message"</span>: 
+                <span class="json-string status_message">"{{ email.status_message }}"</span>,<br>
+
+                &nbsp;&nbsp;<span class="json-key">"ip_sent_from"</span>: 
+                <span class="json-string ip_sent_from">"{{ email.ip_sent_from }}"</span>,<br>
+
+                &nbsp;&nbsp;<span class="json-key">"date_sent"</span>: 
+                <span class="json-string date_sent">"{{ email.date_sent }}"</span>,<br>
+
+                &nbsp;&nbsp;<span class="json-key">"time_sent"</span>: 
+                <span class="json-string time_sent">"{{ email.time_sent }}"</span>,<br>
+
+                &nbsp;&nbsp;<span class="json-key">"recipients"</span>: 
+                <span class="json-string recipients">["{{ '", "'.join(email.recipients) }}"]</span>,<br>
+
+                &nbsp;&nbsp;<span class="json-key">"subject_line"</span>: 
+                <span class="json-string subject_line">"{{ email.subject_line }}"</span>,<br>
+
+                &nbsp;&nbsp;<span class="json-key">"body"</span>: 
+                <span class="json-string body">"""</span><br>
+                <div class="email-body">{{ email.body | safe }}</div>
+                &nbsp;&nbsp;<span class="json-string">"""</span><br>
+                }
+            </div>
+        </div>
+        </div>
+        {% endfor %}
+    {% endif %}
+    <script src="{{ url_for('static',filename='scripts/admin.js') }}"></script>
+    <script src="{{ url_for('static',filename='scripts/autocomplete.js') }}"></script>
+</body>
