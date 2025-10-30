@@ -115,8 +115,8 @@ h1 {
     background: top;
     width: 20px;
     fill: white;
-    margin-left: 148px;
     z-index: 100;
+    left: 0;
 }
 
 .autocomplete {
@@ -135,18 +135,28 @@ h1 {
     display: inline-block;
 }
 
-.autocomplete-items {
-  position: absolute;
-  border: 1px solid #544d4d;
-  border-bottom: none;
-  border-top: none;
-  z-index: 99;
-  top: 100%;
-  left: 0;
-  right: 0;
+.autocomplete-items{
+    position: absolute;
+    border: 1px solid #544d4d;
+    border-bottom: none;
+    border-top: none;
+    z-index: 99;
+    top: 100%;
+    left: 0;
+    right: 0;
 }
 
-.autocomplete-items div {
+.autocomplete-items-sort {
+    position: absolute;
+    border: 1px solid #544d4d;
+    border-bottom: none;
+    border-top: none;
+    z-index: 99;
+    top: 51px;
+    left: 178px;
+}
+
+.autocomplete-items div, .autocomplete-items-sort div {
   padding: 2px;
   cursor: pointer;
   background-color: rgba(24, 29, 32, 1);
@@ -154,11 +164,15 @@ h1 {
   font-size: small;
 }
 
-.autocomplete-items div:hover {
+.autocomplete-items div:hover, .autocomplete-items-sort div:hover {
   background-color: rgb(46, 53, 58);
 }
 
 .autocomplete-active {
   background-color: rgb(73, 83, 90) !important;
   color: #ffffff;
+}
+
+#sortArrow {
+    display: inline-block;
 }
