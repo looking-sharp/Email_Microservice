@@ -1,5 +1,10 @@
 # email_microservice
 An email microservice software to be used to contact users for various uses.
+<img src="images/EmailMicroserviceLogo.png" 
+        alt="Email Microservice Logo" 
+        width="250" 
+        height="250" 
+        style="display: block; margin: 0 auto" />
 
 ## Database Structure
 ![Email Microservice RS](images/Email%20Microservice%20RS.png)
