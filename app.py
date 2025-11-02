@@ -51,6 +51,6 @@ def adminPannel(access_code):
 
 @app.route('/ping')
 def ping():
-    return jsonify({"message": "Hello from Service 1!"})
+    return jsonify({"message": "Hello from Email Service!"})
 
 
