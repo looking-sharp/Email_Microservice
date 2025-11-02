@@ -1,11 +1,26 @@
 from flask import Flask, jsonify, redirect, url_for, render_template, request     #type: ignore
-from flask_cors import CORS                             #type: ignore
+from flask_cors import CORS                                                       #type: ignore
 from werkzeug.middleware.proxy_fix import ProxyFix
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
+from dotenv import load_dotenv                                                    #type: ignore
 import json
+import os
 
+load_dotenv()
+db_link = os.getenv("DATABASE_URL")
 app = Flask(__name__)
 # Allow cross referencing from port 5000 (main)
 CORS(app, origins=["http://127.0.0.1:5000"])
+
+client = MongoClient(db_link, server_api=ServerApi('1'))
+db = client.email_microservice
+
+try:
+    client.admin.command('ping')
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+except Exception as e:
+    print(e)
 
 # Fix user IP address so we can track who requests came from. 
 app.wsgi_app = ProxyFix(
@@ -37,3 +52,5 @@ def adminPannel(access_code):
 @app.route('/ping')
 def ping():
     return jsonify({"message": "Hello from Service 1!"})
+
+

@@ -1,6 +1,9 @@
 # email_microservice
 An email microservice software to be used to contact users for various uses.
 
+## Database Structure
+![Email Microservice RS](images/Email%20Microservice%20RS.png)
+
 ## GET requests
 All the GET requests our microservice allows
 
