@@ -14,7 +14,7 @@ class EmailLog(Base):
     body = Column(Text, nullable=False)
     is_html = Column(Boolean, default=False)
     status = Column(String(50), default="pending")
-    status_code = Column(Integer, nullable=True)
+    status_code = Column(Integer, nullable=False)
     created_at = Column(DateTime(timezone=True), default=utcnow)  
     sent_at = Column(DateTime(timezone=True), nullable=True)
 
@@ -29,5 +29,6 @@ class ScheduledEmail(Base):
     scheduled_time = Column(DateTime(timezone=True), nullable=False)
     status = Column(String(50), default="scheduled")
     created_at = Column(DateTime(timezone=True), default=utcnow)  
+
 
 
