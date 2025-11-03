@@ -91,11 +91,61 @@ function autocomplete(inp, arr) {
 }
 /*execute a function when someone clicks in the document:*/
 document.addEventListener("click", function (e) {
-    closeAllLists(e.target);
+  closeAllLists(e.target);
 });
 } 
 
-var commands = [`"status_code": ""`, `"status_message": ""`, `"ip_sent_from": ""`, `"date_sent": ""`, `"time_sent": ""`, `"subject_line": ""`,
-                `"status_code" INCLUDES: ""`, `"status_message" INCLUDES: ""`, `"ip_sent_from" INCLUDES: ""`, `"date_sent" INCLUDES: ""`, `"time_sent" INCLUDES: ""`, `"subject_line" INCLUDES: ""`, `"recipiants" INCLUDES: ""`, `"body" INCLUDES: ""`
-];
+let viewType = document.body.dataset.view; // e.g., <body data-view="email"> or "scheduled"
+
+// Define commands for each view
+let commands = [];
+
+if (viewType === "email") {
+  commands = [
+    `"id": ""`,
+    `"recipients": ""`,
+    `"subject_line": ""`,
+    `"body": ""`,
+    `"is_html": ""`,
+    `"status": ""`,
+    `"status_code": ""`,
+    `"created_at": ""`,
+    `"sent_at": ""`,
+    
+    `"id" INCLUDES: ""`,
+    `"recipients" INCLUDES: ""`,
+    `"subject_line" INCLUDES: ""`,
+    `"body" INCLUDES: ""`,
+    `"is_html" INCLUDES: ""`,
+    `"status" INCLUDES: ""`,
+    `"status_code" INCLUDES: ""`,
+    `"created_at" INCLUDES: ""`,
+    `"sent_at" INCLUDES: ""`
+  ];
+} else if (viewType === "scheduled") {
+  commands = [
+    `"id": ""`,
+    `"schedule_id": ""`,
+    `"recipients": ""`,
+    `"subject_line": ""`,
+    `"body": ""`,
+    `"is_html": ""`,
+    `"status": ""`,
+    `"status_code": ""`,
+    `"scheduled_time": ""`,
+    `"created_at": ""`,
+    
+    `"id" INCLUDES: ""`,
+    `"schedule_id" INCLUDES: ""`,
+    `"recipients" INCLUDES: ""`,
+    `"subject_line" INCLUDES: ""`,
+    `"body" INCLUDES: ""`,
+    `"is_html" INCLUDES: ""`,
+    `"status" INCLUDES: ""`,
+    `"status_code" INCLUDES: ""`,
+    `"scheduled_time" INCLUDES: ""`,
+    `"created_at" INCLUDES: ""`
+  ];
+}
+
 autocomplete(document.getElementById("filter-text"), commands);

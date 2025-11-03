@@ -3,31 +3,44 @@ const sortButton = document.getElementById("sortByBtn");
 var sortOptions = ["Oldest", "Newest", "Email Status"];
 var divShowing = false;
 
+function formatISODate(isoString) {
+    if (!isoString) return "null"; // handle null values
+
+    const date = new Date(isoString);
+    const options = { 
+        year: 'numeric', month: 'long', day: 'numeric',
+        hour: '2-digit', minute: '2-digit', hour12: true 
+    };
+    return date.toLocaleString('en-US', options); 
+}
+
 function sortEmailsBy(sortingMethod) {
     const emailEntries = Array.from(document.querySelectorAll('.email-entry'));
     if (emailEntries.length === 0) return;
+
     let sorted = [];
+
     switch (sortingMethod) {
         case "Newest":
             sorted = emailEntries.sort((a, b) => {
-                const dateA = new Date(a.querySelector('.date_sent').textContent.replaceAll('"', '') + ' ' + a.querySelector('.time_sent').textContent.replaceAll('"', ''));
-                const dateB = new Date(b.querySelector('.date_sent').textContent.replaceAll('"', '') + ' ' + b.querySelector('.time_sent').textContent.replaceAll('"', ''));
+                const dateA = new Date(a.querySelector('.created_at').textContent.replaceAll('"',''));
+                const dateB = new Date(b.querySelector('.created_at').textContent.replaceAll('"',''));
                 return dateB - dateA; // newest first
             });
             break;
 
         case "Oldest":
             sorted = emailEntries.sort((a, b) => {
-                const dateA = new Date(a.querySelector('.date_sent').textContent.replaceAll('"', '') + ' ' + a.querySelector('.time_sent').textContent.replaceAll('"', ''));
-                const dateB = new Date(b.querySelector('.date_sent').textContent.replaceAll('"', '') + ' ' + b.querySelector('.time_sent').textContent.replaceAll('"', ''));
+                const dateA = new Date(a.querySelector('.created_at').textContent.replaceAll('"',''));
+                const dateB = new Date(b.querySelector('.created_at').textContent.replaceAll('"',''));
                 return dateA - dateB; // oldest first
             });
             break;
 
         case "Email Status":
             sorted = emailEntries.sort((a, b) => {
-                const statusA = parseInt(a.querySelector('.status_code').textContent);
-                const statusB = parseInt(b.querySelector('.status_code').textContent);
+                const statusA = parseInt(a.querySelector('.status_code').textContent.replaceAll('"', '')) || 0;
+                const statusB = parseInt(b.querySelector('.status_code').textContent.replaceAll('"', '')) || 0;
                 return statusA - statusB;
             });
             break;
@@ -36,34 +49,35 @@ function sortEmailsBy(sortingMethod) {
             console.warn("Unknown sorting method:", sortingMethod);
             return;
     }
+
     const parent = emailEntries[0].parentElement;
     sorted.forEach(el => parent.appendChild(el));
 
     toggleDivDisplay();
 }
 
-
+// Populate sort options dynamically
 document.addEventListener('DOMContentLoaded', () => {
-    sortOptions.forEach(element => {
+    sortOptions.forEach(option => {
         const div = document.createElement('div');
-        div.textContent = element;
+        div.textContent = option;
 
         div.addEventListener('click', () => {
-            sortEmailsBy(`${element}`);
+            sortEmailsBy(option);
         });
 
         sortOptionsDiv.appendChild(div);
     });
 });
 
+// Toggle the dropdown display
 function toggleDivDisplay() {
     divShowing = !divShowing;
-    sortOptionsDiv.style.display = divShowing? "block" : "none";
+    sortOptionsDiv.style.display = divShowing ? "block" : "none";
     const sortArrow = document.getElementById("sortArrow");
-    sortArrow.classList.toggle("open");
+    if(sortArrow) sortArrow.classList.toggle("open");
 }
 
 sortButton.addEventListener('click', () => {
     toggleDivDisplay();
-})
-
+});

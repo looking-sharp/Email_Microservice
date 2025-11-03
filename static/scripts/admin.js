@@ -38,37 +38,44 @@ const filterText = document.getElementById("filter-text");
 
 function filter() {
     const query = filterText.value.trim();
-    const queryFormatted = query.split(":").map(substr => substr.replace(/"/g, "").replace("INCLUDES", "").trim());
-    const key = queryFormatted[0];
-    const value = queryFormatted[1];
-    console.log(`key: .${key} value: ${value}`);
-
-    if(!query) {
+    if (!query) {
         emailEntries.forEach(e => e.style.display = "block");
         return;
     }
-    const partial = query.includes("INCLUDES:");
-    if(partial) {
-        emailEntries.forEach(entry => {
-            const element = entry.querySelector(`.${key}`);
-            if (element && element.textContent.includes(value)) {
+
+    // Split by ":" and remove quotes / "INCLUDES"
+    const queryFormatted = query.split(":").map(substr => substr.replace(/"/g, "").replace("INCLUDES", "").trim());
+    const key = queryFormatted[0];
+    const value = queryFormatted[1] ? queryFormatted[1].toLowerCase() : "";
+    const partial = query.toUpperCase().includes("INCLUDES");
+    console.log(`Looking for ${partial ? "partial" : "exact"} match for ${key} with value ${value}`)
+
+    emailEntries.forEach(entry => {
+        const element = entry.querySelector(`.${key}`);
+        let text = element ? element.textContent.replace(/"/g, "").trim() : "";
+        console.log(text);
+
+        // Handle null values
+        if (text.toLowerCase() === "null") text = "";
+
+        if (partial) {
+            // Partial, case-insensitive match
+            if (text.toLowerCase().includes(value)) {
                 entry.style.display = "block";
             } else {
                 entry.style.display = "none";
             }
-        });
-    }
-    else {
-        emailEntries.forEach(entry => {
-            const element = entry.querySelector(`.${key}`);
-            if (element && element.textContent === value) {
+        } else {
+            // Exact match, case-insensitive
+            if (text.toLowerCase() === value) {
                 entry.style.display = "block";
             } else {
                 entry.style.display = "none";
             }
-        });
-    }
+        }
+    });
 }
+
 
 filterText.addEventListener('keydown', function(event) {
     if(event.key === "Enter") {

@@ -67,10 +67,18 @@ h1 {
 .json-section {
     margin-left: 20px;
 }
-
 .json-null {
     color: #808080;
     font-style: italic;
+}
+.json-bool {
+    color: #569cd6;
+}
+.json-bool.True {
+    color: #6a9955; 
+}
+.json-bool.False {
+    color: #c586c0;
 }
 
 .email-body {

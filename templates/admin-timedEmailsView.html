@@ -3,10 +3,18 @@
     <title>Admin Pannel</title>
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/admin.css') }}">
 </head>
-<body>
+<body data-view="scheduled">
     {% if email_data | length == 0 %}
     <span class="json-key">"message"</span>: <span class="json-string">"No emails found"</span>
     {% else %}
+        <ul class="tabs-menu" role="tablist">
+            <li class="tabs-menu-item" role="presentation">
+                <a href="/admin/{{access_code}}?view=emails" tabindex="0" title="Emails View" aria-selected="true" role="tab" data-tab-index="0">Emails</a></li>
+            <li class="tabs-menu-item is-active" role="presentation">
+                <a tabindex="-1" title="Timed Emails View" aria-selected="false" role="tab" data-tab-index="1">Timed Emails</a></li>
+            <li class="tabs-menu-item" role="presentation">
+                <a href="/admin/{{access_code}}?view=test_email" tabindex="-1" title="Send Test Email View" aria-selected="false" role="tab" data-tab-index="2">Send Test Email</a></li>
+        </ul>
         <div class="toolbar">
             <button class="btn" id="colapseBtn">Colapse All</button>
             <button class="btn" id="expandBtn">Expand All</button>
@@ -19,37 +27,44 @@
             <button class="btn" id="searchBtn">Search</button>
         </div>
         {% for email in email_data %}
-        {% set succeed = email.status_code == 200 %}
+        {% set succeed = email.status_code == 202 %}
         <div class="email-entry {{ 'succeed' if succeed else 'fail' }}">
-        <div class="header" onclick="toggleDetails('{{ email.email_id }}')">
+        <div class="header" onclick="toggleDetails('{{ email.id }}')">
             <span class="monospace-text">
-                <b>Email ID:</b> {{ email.email_id }}
+                <b>Email ID:</b> {{ email.id }}
             </span>
             <span class="status monospace-text">
                 {{ email.status_code }}
             </span>
-            <span class="arrow" id="arrow-{{ email.email_id }}">▶</span>
+            <span class="arrow" id="arrow-{{ email.id }}">▶</span>
         </div>
-        <div class="details" id="details-{{ email.email_id }}" style="display: none;">
+        <div class="details" id="details-{{ email.id }}" style="display: none;">
             <div class="json-section">
                 {<br>
+                <span style="display: none;" class="id">{{email.id}}</span>
+
+                &nbsp;&nbsp;<span class="json-key">"schedule_id"</span>: 
+                <span class="json-string schedule_id">"{{ email.schedule_id }}"</span>,<br>
+
                 &nbsp;&nbsp;<span class="json-key">"status_code"</span>: 
                 <span class="json-number status_code">{{ email.status_code }}</span>,<br>
 
                 &nbsp;&nbsp;<span class="json-key">"status_message"</span>: 
-                <span class="json-string status_message">"{{ email.status_message }}"</span>,<br>
+                <span class="json-string status_message">"{{ email.status }}"</span>,<br>
 
-                &nbsp;&nbsp;<span class="json-key">"ip_sent_from"</span>: 
-                <span class="json-string ip_sent_from">"{{ email.ip_sent_from }}"</span>,<br>
+                &nbsp;&nbsp;<span class="json-key">"is_html"</span>: 
+                <span class="json-bool is_html {{ email.is_html }}">{{ email.is_html }}</span>,<br>
 
-                &nbsp;&nbsp;<span class="json-key">"date_sent"</span>: 
-                <span class="json-string date_sent">"{{ email.date_sent }}"</span>,<br>
+                &nbsp;&nbsp;<span class="json-key">"created_at"</span>: 
+                <span class="json-string created_at_formatted">"{{ (email.created_at | friendly_datetime) }}"</span>,<br>
 
-                &nbsp;&nbsp;<span class="json-key">"time_sent"</span>: 
-                <span class="json-string time_sent">"{{ email.time_sent }}"</span>,<br>
+                <span class="json-string created_at" style="display: none;">"{{ email.created_at }}"</span>
+                
+                &nbsp;&nbsp;<span class="json-key">"scheduled_time"</span>: 
+                <span class="json-string scheduled_time">"{{ email.scheduled_time | friendly_datetime }}"</span>,<br>
 
                 &nbsp;&nbsp;<span class="json-key">"recipients"</span>: 
-                <span class="json-string recipients">["{{ '", "'.join(email.recipients) }}"]</span>,<br>
+                <span class="json-string recipients">["{{ '", "'.join(email.recipients.split(",")) }}"]</span>,<br>
 
                 &nbsp;&nbsp;<span class="json-key">"subject_line"</span>: 
                 <span class="json-string subject_line">"{{ email.subject_line }}"</span>,<br>

@@ -3,7 +3,7 @@
     <title>Admin Pannel</title>
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/admin.css') }}">
 </head>
-<body>
+<body data-view="email">
     {% if email_data | length == 0 %}
     <span class="json-key">"message"</span>: <span class="json-string">"No emails found"</span>
     {% else %}
@@ -41,20 +41,27 @@
         <div class="details" id="details-{{ email.id }}" style="display: none;">
             <div class="json-section">
                 {<br>
+                <span style="display: none;" class="id">{{email.id}}</span>
+
                 &nbsp;&nbsp;<span class="json-key">"status_code"</span>: 
                 <span class="json-number status_code">{{ email.status_code }}</span>,<br>
 
                 &nbsp;&nbsp;<span class="json-key">"status_message"</span>: 
                 <span class="json-string status_message">"{{ email.status }}"</span>,<br>
 
+                &nbsp;&nbsp;<span class="json-key">"is_html"</span>: 
+                <span class="json-bool is_html {{ email.is_html }}">{{ email.is_html }}</span>,<br>
+
                 &nbsp;&nbsp;<span class="json-key">"created_at"</span>: 
-                <span class="json-string created_at">"{{ (email.created_at | friendly_datetime) }}"</span>,<br>
+                <span class="json-string created_at_formatted">"{{ (email.created_at | friendly_datetime) }}"</span>,<br>
+
+                <span class="json-string created_at" style="display: none;">"{{ email.created_at }}"</span>
                 
                 &nbsp;&nbsp;<span class="json-key">"sent_at"</span>: 
                 {% if email.sent_at %}
-                    <span class="json-string created_at">"{{ email.sent_at | friendly_datetime }}"</span>
+                    <span class="json-string sent_at">"{{ email.sent_at | friendly_datetime }}"</span>
                 {% else %}
-                    <span class="json-null">null</span>
+                    <span class="json-null sent_at">null</span>
                 {% endif %},<br>
 
                 &nbsp;&nbsp;<span class="json-key">"recipients"</span>: 
