@@ -28,7 +28,9 @@ class ScheduledEmail(Base):
     is_html = Column(Boolean, default=False)
     scheduled_time = Column(DateTime(timezone=True), nullable=False)
     status = Column(String(50), default="scheduled")
+    status_code = Column(Integer, nullable=False)
     created_at = Column(DateTime(timezone=True), default=utcnow)  
+
 
 
 
