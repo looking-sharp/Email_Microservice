@@ -54,6 +54,8 @@ def adminPannel(access_code):
         with open("./static/timed-email-test.json", "r", encoding='utf-8') as f:
             data = json.load(f)
         return render_template("admin-timedEmailsView.html", email_data=data, access_code=access_code)
+    elif view == "test_email":
+        return render_template("admin-testEmailView.html", access_code=access_code)
 
 
 
