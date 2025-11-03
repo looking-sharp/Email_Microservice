@@ -1,9 +1,11 @@
-from flask import Flask, request, jsonify
+from flask import Flask, jsonify, redirect, url_for, render_template, request 
 from flask_cors import CORS
 from dotenv import load_dotenv
+import requests
 import os
 from datetime import datetime, timezone
 import uuid
+import json
 
 from database import init_db, get_db
 from models import EmailLog, ScheduledEmail
@@ -85,7 +87,6 @@ def send_email_endpoint():
     """
     try:
         data = request.get_json(force=True, silent=True) or {}
-
         # Read user input
         used_legacy = "recipiants" in data and "recipients" not in data
         recipients_raw = data.get("recipients", data.get("recipiants", []))
@@ -303,6 +304,75 @@ def check_scheduled_email(schedule_id: str):
         print(f"[check-scheduled-email] error: {e}")
         return jsonify({"status": "failed", "message": "Error checking email status", "statusCode": 500}), 500
 
+'''
+
+UI routes
+
+'''
+
+adminCode = os.getenv("ADMIN_CODE")
+
+@app.template_filter('friendly_datetime')
+def friendly_datetime(value, format="%B %d, %Y at %I:%M %p"):
+    from datetime import datetime
+    if not value:
+        return "NULL"
+    if isinstance(value, str):
+        # Convert ISO string to datetime
+        value = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    return value.strftime(format)
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+@app.route("/renderDebugMode", methods=["POST"])
+def renderDebugMode():
+    client_ip = request.remote_addr;
+    print(client_ip)
+    if(request.form.get("AdminCode") == adminCode):
+        return redirect(url_for("adminPannel", access_code = adminCode));
+    return render_template("index.html")
+
+@app.route("/admin/<access_code>")
+def adminPannel(access_code):
+    if access_code != adminCode:
+        return redirect(url_for("index"))
+    
+    view = request.args.get("view")
+    if view is None:
+        # Redirect to same route with view="emails"
+        return redirect(url_for("adminPannel", access_code=access_code, view="emails"))
+
+    if view == "emails":
+        with open("./static/email-test.json", "r", encoding='utf-8') as f:
+            data = json.load(f)
+        return render_template("admin-emailsView.html", email_data=data, access_code=access_code)
+    elif view == "timed_emails":
+        with open("./static/timed-email-test.json", "r", encoding='utf-8') as f:
+            data = json.load(f)
+        return render_template("admin-timedEmailsView.html", email_data=data, access_code=access_code)
+    elif view == "test_email":
+        return render_template("admin-testEmailView.html", access_code=access_code)
+
+@app.route("/send-test-email", methods=["POST"])
+def sendTestEmail():
+    print(request.method)
+    print(request.form)
+    recipient = request.form.get("recipiant")
+    print(recipient)
+    package = {
+        "recipients": [recipient],
+        "subject_line": request.form.get("subject"),
+        "body": request.form.get("body"),
+        "is_html": True
+    }
+    print(package)
+    response = requests.post("http://127.0.0.1:5002/send-email", json=package)    
+    try:
+        return jsonify(response.json()), response.status_code
+    except ValueError:
+        return response.text, response.status_code
 
 if __name__ == "__main__":
     # Init DB and start background scheduler only when running the app directly

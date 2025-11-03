@@ -13,13 +13,13 @@
         <li class="tabs-menu-item is-active" role="presentation">
             <a tabindex="-1" title="Send Test Email View" aria-selected="false" role="tab" data-tab-index="2">Send Test Email</a></li>
     </ul>
-    <form id="emailForm" method="POST" action="" class="test-email">
+    <form id="emailForm" method="POST" action="/send-test-email" class="test-email">
     
     <label for="subject" title="The subject of your email">Subject:</label>
     <input type="text" id="subject" name="subject" required> <br>
 
     <label for="recipiant" title="The recipiant of your email">Recipiant:</label>
-    <input type="email" id="recipiant" name="subject" required> <br>
+    <input type="email" id="recipiant" name="recipiant" required> <br>
 
     <label for="body">Body:</label>
     <input type="hidden" name="body" id="emailBody">
@@ -43,4 +43,5 @@
     </div>
 
     <button type="submit">Send Email</button>
+    <script src="{{ url_for('static',filename='scripts/testEmail.js') }}"></script>
 </body>
