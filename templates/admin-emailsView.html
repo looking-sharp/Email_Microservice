@@ -5,6 +5,14 @@
 </head>
 <body data-view="email">
     {% if email_data | length == 0 %}
+    <ul class="tabs-menu" role="tablist">
+        <li class="tabs-menu-item is-active" role="presentation">
+            <a tabindex="0" title="Emails View" aria-selected="true" role="tab" data-tab-index="0">Emails</a></li>
+        <li class="tabs-menu-item" role="presentation">
+            <a href="/admin/{{access_code}}?view=timed_emails" tabindex="-1" title="Timed Emails View" aria-selected="false" role="tab" data-tab-index="1">Timed Emails</a></li>
+        <li class="tabs-menu-item" role="presentation">
+            <a href="/admin/{{access_code}}?view=test_email" tabindex="-1" title="Send Test Email View" aria-selected="false" role="tab" data-tab-index="2">Send Test Email</a></li>
+    </ul>
     <span class="json-key">"message"</span>: <span class="json-string">"No emails found"</span>
     {% else %}
         <ul class="tabs-menu" role="tablist">

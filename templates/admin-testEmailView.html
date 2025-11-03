@@ -42,6 +42,26 @@
       </script>
     </div>
 
+    <div class="checkHolder">
+      <label for="is_timed">Timed Email: </label>
+      <input type="checkbox" id="is_timed" name="is_timed">
+    </div><br>
+
+    <div class="timed_section">
+      <p>Send on:</p>
+      <input type="date" id="schedule_for_date" name="schedule_for_date">
+      <p>at</p>
+      <input type="time" id="schedule_for_time" name="schedule_for_time">
+      <select id="timezone" name="timezone">
+        <option value="UTC">UTC</option>
+        <option value="America/Los_Angeles">PST (America/Los_Angeles)</option>
+        <option value="America/New_York">EST (America/New_York)</option>
+        <option value="Europe/London">London (Europe/London)</option>
+        <option value="Asia/Tokyo">Tokyo (Asia/Tokyo)</option>
+      </select>
+    </div>
+
+
     <button type="submit">Send Email</button>
     <script src="{{ url_for('static',filename='scripts/testEmail.js') }}"></script>
 </body>
