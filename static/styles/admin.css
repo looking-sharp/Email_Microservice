@@ -2,7 +2,8 @@ body {
     font-family: "Courier New", Courier, monospace;
     background: #1e1e1e;
     color: #dcdcdc;
-    padding: 20px;
+    padding: 0;
+    margin: 0;
 }
 
 h1 {
@@ -66,6 +67,12 @@ h1 {
 .json-section {
     margin-left: 20px;
 }
+
+.json-null {
+    color: #808080;
+    font-style: italic;
+}
+
 .email-body {
     background: #1e1e1e;
     border: 1px solid #333;
@@ -175,4 +182,50 @@ h1 {
 
 #sortArrow {
     display: inline-block;
+}
+
+.tabs-navigation .tabs-menu {
+    overflow: hidden;
+    overflow-x: hidden;
+    display: flex;
+    overflow-x: scroll;
+    scrollbar-width: none;
+}
+
+.tabs-menu {
+    display: inline-flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    margin-inline-end: 15px;
+    flex-grow: 1;
+    outline-offset: -2px;
+    border-bottom: 1px solid #38383d;
+    width:100%;
+    background-color: #0c0c0d;
+}
+
+.tabs-menu-item.is-active {
+    border-top: 3px solid #0060df;
+    border-bottom: 3px solid #0c0c0d;
+    color: #ffffff;
+}
+
+.tabs-menu-item.is-active a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.tabs-menu-item {
+    font-family: Consolas, monospace;
+    color: #b0b0b0;
+    font-size: 12px;
+    padding: 5px 15px;
+    cursor: pointer;
+    border-top: 3px solid #0c0c0d;
+}
+
+.tabs-menu-item a {
+    color: #b0b0b0;
+    text-decoration: none;
 }

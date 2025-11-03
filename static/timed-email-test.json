@@ -1,0 +1,90 @@
+[
+  {
+    "id": 1,
+    "schedule_id": "sch-001-2025-10-28",
+    "recipients": "team@example.com",
+    "subject_line": "Project Kickoff Reminder",
+    "body": "<p>Hi team,</p><p>Reminder: our project kickoff meeting starts tomorrow at 10:00 AM.</p><p>Regards,<br>PM Office</p>",
+    "is_html": true,
+    "scheduled_time": "2025-10-28T09:00:00Z",
+    "status": "scheduled",
+    "created_at": "2025-10-27T15:12:00Z"
+  },
+  {
+    "id": 2,
+    "schedule_id": "sch-002-2025-10-29",
+    "recipients": "newsletter@subscribers.com",
+    "subject_line": "October Newsletter Release",
+    "body": "<h2>October Updates</h2><p>Stay tuned for this month’s announcements and offers!</p>",
+    "is_html": true,
+    "scheduled_time": "2025-10-29T08:30:00Z",
+    "status": "scheduled",
+    "created_at": "2025-10-27T12:05:00Z"
+  },
+  {
+    "id": 3,
+    "schedule_id": "sch-003-2025-10-30",
+    "recipients": "devops@example.com",
+    "subject_line": "Weekly Deployment Summary",
+    "body": "This is an automated summary of the latest deployment pipeline status.",
+    "is_html": false,
+    "scheduled_time": "2025-10-30T23:45:00Z",
+    "status": "queued",
+    "created_at": "2025-10-27T21:00:00Z"
+  },
+  {
+    "id": 4,
+    "schedule_id": "sch-004-2025-10-31",
+    "recipients": "hr@example.com",
+    "subject_line": "Monthly Payroll Distribution",
+    "body": "<p>Hello HR,</p><p>Reminder: Payroll distribution emails are scheduled to be sent on Friday at 6 PM.</p>",
+    "is_html": true,
+    "scheduled_time": "2025-10-31T18:00:00Z",
+    "status": "scheduled",
+    "created_at": "2025-10-27T09:40:00Z"
+  },
+  {
+    "id": 5,
+    "schedule_id": "sch-005-2025-11-01",
+    "recipients": "clients@agency.com",
+    "subject_line": "November Client Update",
+    "body": "<p>Dear Clients,</p><p>We’re excited to share updates about our November initiatives!</p>",
+    "is_html": true,
+    "scheduled_time": "2025-11-01T10:00:00Z",
+    "status": "scheduled",
+    "created_at": "2025-10-27T13:25:00Z"
+  },
+  {
+    "id": 6,
+    "schedule_id": "sch-006-2025-10-20",
+    "recipients": "alerts@system.com",
+    "subject_line": "System Maintenance Completed",
+    "body": "Automated notice: Scheduled maintenance completed successfully at 01:15 AM UTC.",
+    "is_html": false,
+    "scheduled_time": "2025-10-20T01:00:00Z",
+    "status": "sent",
+    "created_at": "2025-10-19T22:00:00Z"
+  },
+  {
+    "id": 7,
+    "schedule_id": "sch-007-2025-10-25",
+    "recipients": "marketing@example.com",
+    "subject_line": "Black Friday Campaign Preparation",
+    "body": "<p>Hi Marketing,</p><p>Please review campaign materials before next week’s launch.</p>",
+    "is_html": true,
+    "scheduled_time": "2025-10-25T15:00:00Z",
+    "status": "sent",
+    "created_at": "2025-10-23T17:00:00Z"
+  },
+  {
+    "id": 8,
+    "schedule_id": "sch-008-2025-11-02",
+    "recipients": "support@example.com",
+    "subject_line": "Post-Maintenance Verification Check",
+    "body": "Reminder: Run the verification checklist after the maintenance window closes.",
+    "is_html": false,
+    "scheduled_time": "2025-11-02T02:00:00Z",
+    "status": "scheduled",
+    "created_at": "2025-10-28T10:00:00Z"
+  }
+]
