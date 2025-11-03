@@ -218,6 +218,7 @@ def send_timed_email_endpoint():
                 is_html=is_html,
                 scheduled_time=scheduled_dt,
                 status="scheduled",
+                status_code=202
             )
             db.add(scheduled_email)
             db.commit()
