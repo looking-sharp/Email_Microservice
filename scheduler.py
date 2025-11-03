@@ -34,12 +34,12 @@ def _process_single_email(db, scheduled: ScheduledEmail):
     if success:
         scheduled.status = "sent"
         scheduled.sent_at = datetime.now(timezone.utc)
+        scheduled.status_code = 200
     else:
         scheduled.status = "failed"
 
     # Write email log
     log = EmailLog(
-        program_key=scheduled.program_key,
         recipients=scheduled.recipients,
         subject_line=scheduled.subject_line,
         body=scheduled.body,
@@ -50,6 +50,7 @@ def _process_single_email(db, scheduled: ScheduledEmail):
     )
 
     db.add(log)
+    
 
 
 def check_scheduled_emails_loop():

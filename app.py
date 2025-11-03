@@ -218,7 +218,7 @@ def send_timed_email_endpoint():
                 is_html=is_html,
                 scheduled_time=scheduled_dt,
                 status="scheduled",
-                status_code=202
+                status_code=201
             )
             db.add(scheduled_email)
             db.commit()
@@ -366,19 +366,34 @@ def sendTestEmail():
     print(request.method)
     print(request.form)
     recipient = request.form.get("recipiant")
-    print(recipient)
-    package = {
-        "recipients": [recipient],
-        "subject_line": request.form.get("subject"),
-        "body": request.form.get("body"),
-        "is_html": True
-    }
-    print(package)
-    response = requests.post("http://127.0.0.1:5002/send-email", json=package)    
-    try:
-        return jsonify(response.json()), response.status_code
-    except ValueError:
-        return response.text, response.status_code
+    is_timed = "is_timed" in request.form
+    if not is_timed:
+        package = {
+            "recipients": [recipient],
+            "subject_line": request.form.get("subject"),
+            "body": request.form.get("body"),
+            "is_html": True
+        }
+        response = requests.post("http://127.0.0.1:5002/send-email", json=package)    
+        try:
+            return jsonify(response.json()), response.status_code
+        except ValueError:
+            return response.text, response.status_code
+    else:
+        package = {
+            "recipients": [recipient],
+            "subject_line": request.form.get("subject"),
+            "body": request.form.get("body"),
+            "is_html": True,
+            "time_to_send": request.form.get("schedule_for_time"),
+            "date_to_send": request.form.get("schedule_for_date")
+        }
+        
+        response = requests.post("http://127.0.0.1:5002/send-timed-email", json=package)    
+        try:
+            return jsonify(response.json()), response.status_code
+        except ValueError:
+            return response.text, response.status_code
 
 if __name__ == "__main__":
     # Init DB and start background scheduler only when running the app directly
