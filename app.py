@@ -76,7 +76,6 @@ def send_email_endpoint():
     Send a basic email.
     Request JSON:
     {
-      "program_key": "string",
       "recipients": ["email1@example.com"],   # prefer this key
       "recipiants": ["email1@example.com"],   # typo supported
       "subject_line": "string",
@@ -88,7 +87,6 @@ def send_email_endpoint():
         data = request.get_json(force=True, silent=True) or {}
 
         # Read user input
-        program_key = data.get("program_key", "")
         used_legacy = "recipiants" in data and "recipients" not in data
         recipients_raw = data.get("recipients", data.get("recipiants", []))
         subject_line = data.get("subject_line", "")
@@ -110,8 +108,6 @@ def send_email_endpoint():
                 recipients.append(ct)
 
         # Required fields
-        if not program_key:
-            return jsonify({"status": "failed", "message": "Missing 'program_key'", "statusCode": 400}), 400
         if not subject_line:
             return jsonify({"status": "failed", "message": "Missing 'subject_line'", "statusCode": 400}), 400
         if not body:
@@ -129,7 +125,6 @@ def send_email_endpoint():
         db = get_db()
         try:
             log = EmailLog(
-                program_key=program_key,
                 recipients=",".join(recipients),
                 subject_line=subject_line,
                 body=body,
@@ -165,7 +160,6 @@ def send_timed_email_endpoint():
     Create a scheduled email to send later.
     Request JSON:
     {
-      "program_key": "string",
       "recipients": ["email@example.com"],     # prefer this key
       "recipiants": ["email@example.com"],     # legacy key supported
       "subject_line": "string",
@@ -178,7 +172,6 @@ def send_timed_email_endpoint():
     try:
         data = request.get_json(force=True, silent=True) or {}
 
-        program_key = data.get("program_key", "")
         used_legacy = "recipiants" in data and "recipients" not in data
         recipients_raw = data.get("recipients", data.get("recipiants", []))
         subject_line = data.get("subject_line", "")
@@ -188,7 +181,7 @@ def send_timed_email_endpoint():
         date_to_send = data.get("date_to_send", "")
 
         # Presence check
-        if not all([program_key, recipients_raw, subject_line, body, time_to_send, date_to_send]):
+        if not all([recipients_raw, subject_line, body, time_to_send, date_to_send]):
             return jsonify({"status": "failed", "message": "Missing required fields", "statusCode": 400}), 400
 
         # Normalize recipients
@@ -218,7 +211,6 @@ def send_timed_email_endpoint():
         try:
             scheduled_email = ScheduledEmail(
                 schedule_id=schedule_id,
-                program_key=program_key,
                 recipients=",".join(recipients),
                 subject_line=subject_line,
                 body=body,
@@ -247,7 +239,6 @@ def send_timed_email_endpoint():
 
                     # Check email log
                     clog = EmailLog(
-                        program_key=program_key,
                         recipients=confirm_to,
                         subject_line=confirm_subject,
                         body=confirm_body,

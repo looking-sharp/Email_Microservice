@@ -9,7 +9,6 @@ utcnow = lambda: datetime.now(timezone.utc)
 class EmailLog(Base):
     __tablename__ = "email_logs"
     id = Column(Integer, primary_key=True, index=True)
-    program_key = Column(String(255), nullable=False)
     recipients = Column(Text, nullable=False)
     subject_line = Column(String(500), nullable=False)
     body = Column(Text, nullable=False)
@@ -23,7 +22,6 @@ class ScheduledEmail(Base):
     __tablename__ = "scheduled_emails"
     id = Column(Integer, primary_key=True, index=True)
     schedule_id = Column(String(64), unique=True, index=True, nullable=False)
-    program_key = Column(String(255), nullable=False)
     recipients = Column(Text, nullable=False)
     subject_line = Column(String(500), nullable=False)
     body = Column(Text, nullable=False)
