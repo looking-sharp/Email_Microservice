@@ -343,14 +343,19 @@ def adminPannel(access_code):
     if view is None:
         # Redirect to same route with view="emails"
         return redirect(url_for("adminPannel", access_code=access_code, view="emails"))
-
     if view == "emails":
-        with open("./static/email-test.json", "r", encoding='utf-8') as f:
-            data = json.load(f)
+        db = get_db()
+        try:
+            data = db.query(EmailLog).all()
+        finally:
+            db.close()
         return render_template("admin-emailsView.html", email_data=data, access_code=access_code)
     elif view == "timed_emails":
-        with open("./static/timed-email-test.json", "r", encoding='utf-8') as f:
-            data = json.load(f)
+        db = get_db()
+        try:
+            data = db.query(ScheduledEmail).all()
+        finally:
+            db.close()
         return render_template("admin-timedEmailsView.html", email_data=data, access_code=access_code)
     elif view == "test_email":
         return render_template("admin-testEmailView.html", access_code=access_code)

@@ -295,3 +295,12 @@ h1 {
 .ql-blank {
     min-height: 180px;
 }
+
+.ql-editor p {
+    display: block !important;
+    margin-block-start: 1em !important;
+    margin-block-end: 1em !important;
+    margin-inline-start: 0px !important;
+    margin-inline-end: 0px !important;
+    unicode-bidi: isolate !important;
+}
