@@ -30,3 +30,4 @@ class ScheduledEmail(Base):
     status = Column(String(50), default="scheduled")
     created_at = Column(DateTime(timezone=True), default=utcnow)  
     sent_at = Column(DateTime(timezone=True), nullable=True)
+
