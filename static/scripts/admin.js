@@ -1,5 +1,10 @@
 const emailEntries = document.querySelectorAll(".email-entry");
 
+/** This function toggles the details display from none to
+ *  block based on a given email id
+ *
+ * @param {*} id 
+ */
 function toggleDetails(id) {
     const details = document.getElementById(`details-${id}`);
     const arrow = document.getElementById(`arrow-${id}`);
@@ -15,6 +20,10 @@ function toggleDetails(id) {
 const colapseButton = document.getElementById("colapseBtn");
 const expandButton = document.getElementById("expandBtn");
 
+/** This function toggles all details to be none
+ *  if they are open when the colapse all button
+ *  is pressed
+ */
 colapseButton.addEventListener('click', () => {
     emailEntries.forEach(entry => {
         const details = entry.querySelector(".details");
@@ -24,6 +33,10 @@ colapseButton.addEventListener('click', () => {
     });
 });
 
+/** This function toggles all details to be block
+ *  if they are closed when the expand all button
+ *  is pressed
+ */
 expandButton.addEventListener('click', () => {
     emailEntries.forEach(entry => {
         const details = entry.querySelector(".details");
@@ -36,6 +49,11 @@ expandButton.addEventListener('click', () => {
 const searchButton = document.getElementById("searchBtn");
 const filterText = document.getElementById("filter-text");
 
+/** This function filters all of the email entries
+ *  based on a list of commands in /static/autocomplete.js
+ *  It looks for 1-1 matches or general matches if the keyword
+ *  "INCLUDES" is in the command
+ */
 function filter() {
     const query = filterText.value.trim();
     if (!query) {
@@ -45,8 +63,8 @@ function filter() {
 
     // Split by ":" and remove quotes / "INCLUDES"
     const queryFormatted = query.split(":").map(substr => substr.replace(/"/g, "").replace("INCLUDES", "").trim());
-    const key = queryFormatted[0];
-    const value = queryFormatted[1] ? queryFormatted[1].toLowerCase() : "";
+    const key = queryFormatted[0]; // e.g. status_code
+    const value = queryFormatted[1] ? queryFormatted[1].toLowerCase() : ""; // e.g. 200
     const partial = query.toUpperCase().includes("INCLUDES");
     console.log(`Looking for ${partial ? "partial" : "exact"} match for ${key} with value ${value}`)
 
@@ -76,13 +94,14 @@ function filter() {
     });
 }
 
-
+/* Allow for user to type enter in place of clucking search button */
 filterText.addEventListener('keydown', function(event) {
     if(event.key === "Enter") {
         filter();
     }
 });
 
+/* Filter responses when search button is pressed */
 searchButton.addEventListener('click', () => {
     filter();
 })

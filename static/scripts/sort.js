@@ -3,6 +3,11 @@ const sortButton = document.getElementById("sortByBtn");
 var sortOptions = ["Oldest", "Newest", "Email Status"];
 var divShowing = false;
 
+/** This function formatts an isoString to a date string
+ * 
+ * @param {string} isoString 
+ * @returns dateString
+ */
 function formatISODate(isoString) {
     if (!isoString) return "null"; // handle null values
 
@@ -14,6 +19,11 @@ function formatISODate(isoString) {
     return date.toLocaleString('en-US', options); 
 }
 
+/** This function sorts the current list of emails
+ *  based on oldest, newest, or email status
+ * 
+ * @param {string} sortingMethod 
+ */
 function sortEmailsBy(sortingMethod) {
     const emailEntries = Array.from(document.querySelectorAll('.email-entry'));
     if (emailEntries.length === 0) return;
@@ -56,7 +66,7 @@ function sortEmailsBy(sortingMethod) {
     toggleDivDisplay();
 }
 
-// Populate sort options dynamically
+/* Create all the sort options dynamically */
 document.addEventListener('DOMContentLoaded', () => {
     sortOptions.forEach(option => {
         const div = document.createElement('div');
@@ -70,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Toggle the dropdown display
+/* Toggle the sort dropdown display */
 function toggleDivDisplay() {
     divShowing = !divShowing;
     sortOptionsDiv.style.display = divShowing ? "block" : "none";

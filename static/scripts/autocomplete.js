@@ -97,10 +97,11 @@ document.addEventListener("click", function (e) {
 
 let viewType = document.body.dataset.view; // e.g., <body data-view="email"> or "scheduled"
 
-// Define commands for each view
+// commands for each view
 let commands = [];
 
 if (viewType === "email") {
+  // list of filter commands avialiable for emails
   commands = [
     `"id": ""`,
     `"recipients": ""`,
@@ -123,6 +124,7 @@ if (viewType === "email") {
     `"sent_at" INCLUDES: ""`
   ];
 } else if (viewType === "scheduled") {
+  // list of filter commands avialiable for scheduled emails
   commands = [
     `"id": ""`,
     `"schedule_id": ""`,

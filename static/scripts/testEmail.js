@@ -16,7 +16,9 @@ const tzOffsets = {
   "Asia/Tokyo": 9
 };
 
-
+/** This function controls the data formatting from the HTML form
+ *  so that it is understandable by the flask route.
+ */
 form.addEventListener("submit", (e) => {
     bodyInput.value = quill.root.innerHTML;
 
@@ -55,17 +57,12 @@ form.addEventListener("submit", (e) => {
     }
 });
 
-// Hide the timed section by default
+/* Hide the timed section by default*/
 timedSection.style.display = "none";
 
-// Toggle visibility when "Timed Email" checkbox changes
+/* Toggle visibility when "Timed Email" checkbox changes */
 isTimedCheckbox.addEventListener("change", function () {
   timedSection.style.display = this.checked ? "flex" : "none";
   timedSection.style.gap = "8px";
   timedSection.style.alignItems = "center";
-});
-
-// Handle form submission
-form.addEventListener("submit", function (e) {
-  
 });
