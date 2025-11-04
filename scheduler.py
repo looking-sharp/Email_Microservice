@@ -10,7 +10,15 @@ CHECK_INTERVAL_SECONDS = 60  # Check each 60 seconds
 
 
 def _fetch_due_scheduled_emails(db):
-    """Get scheduled emails (scheduled_time is now or in the past, and still not processed)"""
+    """ Gets the scheduled emails where the scheduled_time is now or already happened
+        and the email is not processed yet
+    
+    Args:
+        db (database session): The open session of the database
+
+    Returns:
+        All the emails that haven't been sent out yet and should be.
+    """
     now = datetime.now(timezone.utc)
     return db.query(ScheduledEmail).filter(
         ScheduledEmail.status == "scheduled",
@@ -19,7 +27,13 @@ def _fetch_due_scheduled_emails(db):
 
 
 def _process_single_email(db, scheduled: ScheduledEmail):
-    """Send a scheduled email and update database."""
+    """ Send a scheduled email and save the information into
+        the email log of the database
+
+    Args:
+        db (database instance): The open session of the database
+        scheduled (ScheduledEmail): The column of the email to send from email.db
+    """
     recipients = [r.strip() for r in scheduled.recipients.split(",") if r.strip()]
 
     # Attempt to send
@@ -54,6 +68,10 @@ def _process_single_email(db, scheduled: ScheduledEmail):
 
 
 def check_scheduled_emails_loop():
+    """ This function is the main loop for the scheduler. It looks
+        through all the scheduled emails to find ones that need to be sent
+        ever minute, and attempts to send them.
+    """
     while True:
         try:
             db = get_db()

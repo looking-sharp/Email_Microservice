@@ -37,14 +37,15 @@ def health():
     """Check if the service is running."""
     return jsonify({"status": "ok", "service": "email-microservice"}), 200
 
-def _normalize_recipients(raw):
-    """
-    Normalize recipients:
-    - must be a list
-    - trim spaces
-    - lowercase
-    - drop empty
-    - de-duplicate (preserve order)
+def _normalize_recipients(raw: list[str]):
+    """ Returns a cleaned list of recipiants from an email request.
+        (Trims spaces, makes lowercase, removes duplicated / empty)
+    
+    Args:
+        raw (list[str]): Inputted list of emails 
+    
+    Returns:
+        list[str]: the cleaned version of the raw list
     """
     if not isinstance(raw, list):
         return None
@@ -60,9 +61,16 @@ def _normalize_recipients(raw):
 
 
 def _validate_lengths(subject_line: str, body: str):
-    """
-    Light input guardrails to keep logs and payloads reasonable.
-    Adjust limits as needed.
+    """ Light input guardrails to keep logs and payloads reasonable.
+        Limites can be adjusted as needed.
+
+    Args:
+        subject_line (str): subject line of the email
+        body (str): body of the email
+    
+    Returns:
+        Boolean: If the subject line and body are smaller than max
+        str: Error message for if it's too large
     """
     MAX_SUBJECT = 256
     MAX_BODY = 100_000
@@ -74,16 +82,27 @@ def _validate_lengths(subject_line: str, body: str):
 
 @app.post("/send-email")
 def send_email_endpoint():
-    """
-    Send a basic email.
-    Request JSON:
-    {
-      "recipients": ["email1@example.com"],   # prefer this key
-      "recipiants": ["email1@example.com"],   # typo supported
-      "subject_line": "string",
-      "body": "string",
-      "is_html": boolean
-    }
+    """ HTTP Request that takes in an JSON package and sends
+        an email with the data from that package.
+
+    Args:
+        Request (JSON):
+            {
+            "recipients": ["string],            # list of recipiant emails
+            "recipiants": ["string"],           # typo supported
+            "subject_line": "string",           # subject line of email
+            "body": "string",                   # body of email
+            "is_html": boolean                  # if body is formatted as HTML
+            }
+    
+    Returns:
+        JSON:
+            {
+            "status": "string",                 # "success" or "failed"
+            "message": "string",                # Outcome of the email process
+            "statusCode": Integer,              # The status code of the email
+            "details": ["string"], "string"     # the subject line and recipiants of the email if success
+            }
     """
     try:
         data = request.get_json(force=True, silent=True) or {}
@@ -157,18 +176,37 @@ def send_email_endpoint():
 
 @app.post("/send-timed-email")
 def send_timed_email_endpoint():
-    """
-    Create a scheduled email to send later.
-    Request JSON:
-    {
-      "recipients": ["email@example.com"],     # prefer this key
-      "recipiants": ["email@example.com"],     # legacy key supported
-      "subject_line": "string",
-      "body": "string",
-      "is_html": boolean,
-      "time_to_send": "HH:MM",                 # e.g., "14:30"
-      "date_to_send": "YYYY-MM-DD"             # e.g., "2025-11-15"
-    }
+    """ HTTP Request that takes in an JSON package and submits 
+        a request to send an email with the provided data at a 
+        later time and or date
+
+    Args:
+        Request (JSON):
+            {
+            "recipients": ["string],            # list of recipiant emails
+            "recipiants": ["string"],           # typo supported
+            "subject_line": "string",           # subject line of email
+            "body": "string",                   # body of email
+            "is_html": boolean,                 # if body is formatted as HTML
+            "time_to_send": "string",           # formatted as "HH:MM" (24 hour UTC)
+            "date_to_send": "string"            # formatted as "YYYY-MM-DD"
+            }
+    
+    Returns:
+        JSON:
+            {
+            "status": "string",                 # "success" or "failed"
+            "message": "string",                # Outcome of the email process
+            "statusCode": Integer,              # The status code of the email
+            "details":                          # if success, return details of scheduled email
+                {
+                "schedule_id": "string",
+                "recipients": ["string"],
+                "subject_line": "string",
+                "time_to_send": "string",
+                "date_to_send": "string"
+                }
+            }
     """
     try:
         data = request.get_json(force=True, silent=True) or {}
@@ -280,7 +318,21 @@ def send_timed_email_endpoint():
 
 @app.get("/check-scheduled-email/<schedule_id>")
 def check_scheduled_email(schedule_id: str):
-    """Return the status of a scheduled email, or 404 if not found."""
+    """Return the status of a scheduled email, or 404 if not found.
+    
+    Args:
+        schedule_id (string): the schedule id of the email
+    
+    Returns:
+        JSON:
+            {
+            "status": "string",                 # "success" or "failed"
+            "message": "string",                # Outcome of the schedule look up process
+            "statusCode": Integer,              # The status code of the email
+            "email_status": "string",           # status of the email
+            "scheduled_time": "string",         # when the email is scheduled to be sent out
+            "sent_at": "string"                 # when the email was sent out (if has been already)
+    """
     try:
         db = get_db()
         try:
@@ -315,6 +367,15 @@ adminCode = os.getenv("ADMIN_CODE")
 
 @app.template_filter('friendly_datetime')
 def friendly_datetime(value, format="%B %d, %Y at %I:%M %p"):
+    """ Convert the date info from the database into a human readable format
+
+    Args:
+        value (str): The incoming dateTime string
+        format (str): The format options for the returned dateTime string.
+
+    Returns:
+        str: The formatted dateTime string 
+    """
     from datetime import datetime
     if not value:
         return "NULL"
@@ -325,10 +386,24 @@ def friendly_datetime(value, format="%B %d, %Y at %I:%M %p"):
 
 @app.route("/")
 def index():
+    """ Routes the user to the main UI page once opened
+    
+    Returns:
+        rendering of templates/index.html
+    """
     return render_template("index.html")
 
 @app.route("/renderDebugMode", methods=["POST"])
 def renderDebugMode():
+    """ Routes the user to the admin pannel if the admin code
+        From the "/" route matches the ADMIN_CODE env variable
+    
+    Returns:
+        if the admin code is correct:
+           redirect to the /admin route
+        if the admin code is incoreect:
+            rendering of templates/index.html 
+    """
     client_ip = request.remote_addr;
     print(client_ip)
     if(request.form.get("AdminCode") == adminCode):
@@ -337,6 +412,21 @@ def renderDebugMode():
 
 @app.route("/admin/<access_code>")
 def adminPannel(access_code):
+    """ Routes the user to the admin pannel via 
+        /admin/<access_code>?view=<view_name>
+
+    Args:
+        access_code (string): The access code for your program
+        view_name (string): the name of the view you want to enter
+                            in the admin pannel
+            Options: ["emails", "timed_emails", "test_email"]
+    
+    Returns:
+        if all arguments are correct / provided:
+            rendering of the appropiate view from templates/admin-<view_name>View.html
+        if access_code isn't valid:
+            redirect to "/"
+    """
     if access_code != adminCode:
         return redirect(url_for("index"))
     
@@ -363,6 +453,21 @@ def adminPannel(access_code):
 
 @app.route("/send-test-email", methods=["POST"])
 def sendTestEmail():
+    """ HTTP Request that takes in an HTML form and creates a 
+        test email based on the info in it
+    
+    Args:
+        form.recipiant (Input[type="text"]): the email of the recipiant for the test email
+        form.subject_line ((Input[type="text"])): subject line of email
+        form.body (HTML): body of the email as HTML (use rich text editor)
+        form.is_timed (Input[type="chechbox"]): Weather the email should be timed
+        form.time_to_send (Input[type="time"]): The time to send (must be USC timezone)
+        form.date_to_send (Input[type="date]): The date to send
+
+    Returns: 
+        JSON: The response from the "/send-email" or "/send-timed-email" 
+        requests depending on if form.is_timed is provided.
+    """
     print(request.method)
     print(request.form)
     recipient = request.form.get("recipiant")

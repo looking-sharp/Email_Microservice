@@ -2,6 +2,12 @@ from sqlalchemy import Column, Integer, String, DateTime, Boolean, Text
 from sqlalchemy.orm import declarative_base
 from datetime import datetime, timezone
 
+"""
+
+This python script defines the layout of email.db 
+
+"""
+
 Base = declarative_base()
 
 utcnow = lambda: datetime.now(timezone.utc)  

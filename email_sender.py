@@ -10,7 +10,21 @@ SMTP_PASS = os.getenv("SMTP_PASS")
 SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
 SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
 
-def send_email(recipients: list, subject: str, body: str, is_html: bool = False) -> tuple[bool, int, str]:
+def send_email(recipients: list[str], subject: str, body: str, is_html: bool = False) -> tuple[bool, int, str]:
+    """ Uses the SMTP information saved in the .env file to 
+        send an email using smtplib
+
+    Args:
+        recipiants (list[str]): list of the emails for the recipiants
+        subject (str): the subject line for the email
+        body (str): the body of the email
+        is_html (bool): if the body is formatted in HTML
+    
+    Returns:
+        bool: If email was sucessfully sent
+        int: Status code for the email
+        str: Status message for the email
+    """
     try:
         msg = EmailMessage()
         msg['Subject'] = subject
