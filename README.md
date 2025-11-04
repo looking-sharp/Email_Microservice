@@ -182,7 +182,7 @@ This request is used to submit an email using the email microservice to be sent 
       "subject_line": "string",
       "time_to_send": "string",
       "date_to_send": "string"
-      }
+    }
 }
 ```
 ---
