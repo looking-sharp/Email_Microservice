@@ -1,6 +1,21 @@
 # email_microservice
 An email microservice software to be used to contact users for various uses
 
+- [email\_microservice](#email_microservice)
+  - [Features](#features)
+  - [Quick Start](#quick-start)
+    - [Prerequisites](#prerequisites)
+    - [Installation](#installation)
+    - [Run](#run)
+  - [Backend Information](#backend-information)
+    - [Database Structure](#database-structure)
+  - [API Endpoints](#api-endpoints)
+  - [GET requests](#get-requests)
+  - [POST requests](#post-requests)
+    - [`POST /send-email`](#post-send-email)
+    - [`Submit Timed Email`](#submit-timed-email)
+
+
 ## Features
 
 -  **Immediate Email Sending** - Send emails instantly via SMTP
