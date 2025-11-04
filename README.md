@@ -102,6 +102,8 @@ docker-compose up --build
 
 ### Database Structure
 ![Email Microservice RS](images/Email%20Microservice%20RS.png)
+Data is stored using sqlite and is interacted with through SQLAlchemy \
+See models.py for more information
 
 ## GET requests
 All the GET requests our microservice allows
