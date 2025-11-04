@@ -1,7 +1,7 @@
-# email_microservice
+# Email Microservice
 An email microservice software to be used to contact users for various uses
 
-- [email\_microservice](#email_microservice)
+- [Email Microservice](#email-microservice)
   - [Features](#features)
   - [Quick Start](#quick-start)
     - [Prerequisites](#prerequisites)
@@ -13,7 +13,7 @@ An email microservice software to be used to contact users for various uses
   - [GET requests](#get-requests)
   - [POST requests](#post-requests)
     - [`POST /send-email`](#post-send-email)
-    - [`Submit Timed Email`](#submit-timed-email)
+    - [`POST /send-timed-email`](#post-send-timed-email)
 
 
 ## Features
@@ -150,7 +150,7 @@ This request is used to send an email using the email microservice
 ---
 
 
-### `Submit Timed Email`
+### `POST /send-timed-email`
 This request is used to submit an email using the email microservice to be sent at a later time/date
 
 **Request**
