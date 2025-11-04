@@ -8,7 +8,6 @@ An email microservice software to be used to contact users for various uses
   - [Run](#run)
 - [Backend Information](#backend-information)
   - [Database Structure](#database-structure)
-- [API Endpoints](#api-endpoints)
 - [GET requests](#get-requests)
 - [POST requests](#post-requests)
   - [`POST /send-email`](#post-send-email)
@@ -103,8 +102,6 @@ docker-compose up --build
 
 ### Database Structure
 ![Email Microservice RS](images/Email%20Microservice%20RS.png)
-
-## API Endpoints
 
 ## GET requests
 All the GET requests our microservice allows
