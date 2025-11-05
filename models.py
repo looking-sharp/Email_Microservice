@@ -23,6 +23,7 @@ class EmailLog(Base):
     status_code = Column(Integer, nullable=False)
     created_at = Column(DateTime(timezone=True), default=utcnow)  
     sent_at = Column(DateTime(timezone=True), nullable=True)
+    
 class ScheduledEmail(Base):
     __tablename__ = "scheduled_emails"
     id = Column(Integer, primary_key=True, index=True)
