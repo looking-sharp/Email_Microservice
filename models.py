@@ -23,7 +23,6 @@ class EmailLog(Base):
     status_code = Column(Integer, nullable=False)
     created_at = Column(DateTime(timezone=True), default=utcnow)  
     sent_at = Column(DateTime(timezone=True), nullable=True)
-
 class ScheduledEmail(Base):
     __tablename__ = "scheduled_emails"
     id = Column(Integer, primary_key=True, index=True)
@@ -34,8 +33,18 @@ class ScheduledEmail(Base):
     is_html = Column(Boolean, default=False)
     scheduled_time = Column(DateTime(timezone=True), nullable=False)
     status = Column(String(50), default="scheduled")
-    status_code = Column(Integer, nullable=False)
+    status_code = Column(Integer, nullable=True)
     created_at = Column(DateTime(timezone=True), default=utcnow)  
+    sent_at = Column(DateTime(timezone=True), nullable=True)
+
+"""
+class DoNotSendLog(Base):
+    __tablename__ = "do_not_send_logs"
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String(255), unique=True, nullable=False)
+    reason = Column(String(255), nullable=True)
+    unsubscribed_at = Column(DateTime(timezone=True), default=utcnow)
+"""
 
 
 
