@@ -93,9 +93,13 @@ ADMIN_CODE="123"
 > **Note:** Get Gmail App Password from [Google Account Settings](https://support.google.com/accounts/answer/185833)
 
 ### Run
-In your main project directory (the one with `docker-compose.yml` in it) run:
+If you haven't built it yet, in your main project directory (the one with `docker-compose.yml` in it) run:
 ```bash
-docker-compose up --build
+docker-compose up --build email-microservice
+```
+Or if you have built it,
+``` bash
+docker-compose up --no-build email-microservice
 ```
 
 ## Backend Information
