@@ -54,11 +54,15 @@ services:
     environment:
       FLASK_APP: app.py
       FLASK_ENV: development
+      DATABASE_URL: sqlite:////app_parent/data/email.db
+    volumes:
+      - ./Email_Microservice/..:/app_parent
 ```
 
 If your set up is correct, your file tree will look something like this:
 ```bash
 YOUR_PROJECT
+├── data
 ├── Email_Microservice
 │   ├── .env
 │   ├── app.py
@@ -78,9 +82,11 @@ YOUR_PROJECT
 └── docker-compose.yml
 ```
 
+> [!IMPORTANT]
+> You must have a data directory in the directory of YOUR_PROJECT
+
 In the `.env` file:
 ```properties
-DATABASE_URL="sqlite:///email.db"
 EMAIL="your-email@gmail.com"
 SMTP_PASS="your-app-password"
 SMTP_SERVER="smtp.gmail.com"
