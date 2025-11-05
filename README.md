@@ -37,6 +37,9 @@ An email microservice software to be used to contact users for various uses
 ```bash
 # Clone repository into your main project
 git clone https://github.com/yourusername/email-microservice.git
+
+# Make data directory for database storage
+mkdir data
 ```
 Outside the created repository in your main project folder:
 ```bash
