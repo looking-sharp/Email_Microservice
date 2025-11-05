@@ -2,8 +2,8 @@ import threading
 import time
 from datetime import datetime, timezone
 
-from database import get_db
-from models import ScheduledEmail, EmailLog
+from database import get_db, save_email_log
+from models import ScheduledEmail
 from email_sender import send_email
 
 CHECK_INTERVAL_SECONDS = 60  # Check each 60 seconds
@@ -36,8 +36,13 @@ def _process_single_email(db, scheduled: ScheduledEmail):
     """
     recipients = [r.strip() for r in scheduled.recipients.split(",") if r.strip()]
 
+    if not recipients:
+        print(f"[scheduler] scheduled email {scheduled.schedule_id} has no valid recipients, skipping")
+        scheduled.status = "failed"
+        return
+
     # Attempt to send
-    success, status_code, message = send_email(
+    success, status_code, _ = send_email(
         recipients=recipients,
         subject=scheduled.subject_line,
         body=scheduled.body,
@@ -45,25 +50,24 @@ def _process_single_email(db, scheduled: ScheduledEmail):
     )
 
     # Update scheduled email status
-    if success:
-        scheduled.status = "sent"
-        scheduled.sent_at = datetime.now(timezone.utc)
-        scheduled.status_code = 200
-    else:
-        scheduled.status = "failed"
+    now = datetime.now(timezone.utc)
+    scheduled.status = "sent" if success else "failed"
+    scheduled.sent_at = now if success else None
+    scheduled.status_code = 200 if success else status_code
 
-    # Write email log
-    log = EmailLog(
-        recipients=scheduled.recipients,
+    # Log the email
+    log_success = save_email_log(
+        db,
+        recipients=recipients,
         subject_line=scheduled.subject_line,
         body=scheduled.body,
         is_html=scheduled.is_html,
-        status="sent" if success else "failed",
-        status_code=status_code,
-        sent_at=datetime.now(timezone.utc) if success else None
+        success=success,
+        status_code=status_code
     )
+    if not log_success:
+        print(f"[scheduler] Failed to log scheduled email {scheduled.schedule_id}")
 
-    db.add(log)
     
 
 
@@ -74,19 +78,21 @@ def check_scheduled_emails_loop():
     """
     while True:
         try:
-            db = get_db()
-            try:
-                due_list = _fetch_due_scheduled_emails(db)
-                print(f"[scheduler] now={datetime.now(timezone.utc).isoformat()} due={len(due_list)}")
-                for scheduled in due_list:
-                    print(f"[scheduler] processing id={scheduled.schedule_id} at {scheduled.scheduled_time}")
-                    _process_single_email(db, scheduled)
-                db.commit()
-            except Exception as inner:
-                db.rollback()
-                print(f"[scheduler] processing error: {inner}")
-            finally:
-                db.close()
+            with get_db() as db:
+                try:
+                    due_list = _fetch_due_scheduled_emails(db)
+                    print(f"[scheduler] now={datetime.now(timezone.utc).isoformat()} due={len(due_list)}")
+
+                    for scheduled in due_list:
+                        print(f"[scheduler] processing id={scheduled.schedule_id} at {scheduled.scheduled_time}")
+                        _process_single_email(db, scheduled)
+
+                    db.commit()  # commit all processed emails at once
+
+                except Exception as inner:
+                    db.rollback()
+                    print(f"[scheduler] processing error: {inner}")
+
         except Exception as outer:
             print(f"[scheduler] unexpected error: {outer}")
 

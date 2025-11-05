@@ -37,3 +37,12 @@ class ScheduledEmail(Base):
     status_code = Column(Integer, nullable=True)
     created_at = Column(DateTime(timezone=True), default=utcnow)  
     sent_at = Column(DateTime(timezone=True), nullable=True)
+
+"""
+class DoNotSendLog(Base):
+    __tablename__ = "do_not_send_logs"
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String(255), unique=True, nullable=False)
+    reason = Column(String(255), nullable=True)
+    unsubscribed_at = Column(DateTime(timezone=True), default=utcnow)
+"""

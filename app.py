@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 import uuid
 import json
 
-from database import init_db, get_db
+from database import init_db, get_db, save_email_log, save_scheduled_email, find_in_db
 from models import EmailLog, ScheduledEmail
 from email_sender import send_email
 from scheduler import start_scheduler
@@ -30,12 +30,6 @@ CORS(app, resources={
 # Initialize database and start background scheduler
 # init_db()
 # start_scheduler()
-
-
-@app.get("/health")
-def health():
-    """Check if the service is running."""
-    return jsonify({"status": "ok", "service": "email-microservice"}), 200
 
 def _normalize_recipients(raw: list[str]):
     """ Returns a cleaned list of recipiants from an email request.
@@ -79,6 +73,16 @@ def _validate_lengths(subject_line: str, body: str):
     if len(body) > MAX_BODY:
         return False, f"'body' too long (>{MAX_BODY} chars)"
     return True, ""
+
+# ------------------------
+#   API CALLS
+# ------------------------
+
+@app.get("/health")
+def health():
+    """Check if the service is running."""
+    return jsonify({"status": "ok", "service": "email-microservice"}), 200
+
 
 @app.post("/send-email")
 def send_email_endpoint():
@@ -142,21 +146,8 @@ def send_email_endpoint():
         success, status_code, message = send_email(recipients, subject_line, body, is_html)
 
         # Log
-        db = get_db()
-        try:
-            log = EmailLog(
-                recipients=",".join(recipients),
-                subject_line=subject_line,
-                body=body,
-                is_html=is_html,
-                status="sent" if success else "failed",
-                status_code=status_code,
-                sent_at=datetime.now(timezone.utc) if success else None,
-            )
-            db.add(log)
-            db.commit()
-        finally:
-            db.close()
+        with get_db() as db:
+            save_email_log(db, recipients, subject_line, body, is_html, success, status_code)
 
         # Response
         payload = {
@@ -246,55 +237,33 @@ def send_timed_email_endpoint():
 
         # Create id and persist
         schedule_id = uuid.uuid4().hex
-        db = get_db()
-        try:
-            scheduled_email = ScheduledEmail(
-                schedule_id=schedule_id,
-                recipients=",".join(recipients),
-                subject_line=subject_line,
-                body=body,
-                is_html=is_html,
-                scheduled_time=scheduled_dt,
-                status="scheduled",
-                status_code=201
-            )
-            db.add(scheduled_email)
-            db.commit()
-            try:
+        with get_db() as db:
+            # Save scheduled email
+            scheduled_ok = save_scheduled_email(db, schedule_id, recipients, subject_line, body, is_html, scheduled_dt)
+            if not scheduled_ok:
+                print("[send-timed-email] Failed to save scheduled email")
+            else:
                 confirm_to = os.getenv("CONFIRMATION_TO", "").strip().lower()
                 if confirm_to:
-                    confirm_subject = f"[EmailService] Complete your appointment! - {schedule_id}"
-                    confirm_body = f"""
-                    <html><body>
-                      <h3>Your appointment has been successfully created</h3>
-                      <ul>
-                        <li><b>Schedule ID:</b> {schedule_id}</li>
-                        <li><b>Recipients:</b> {", ".join(recipients)}</li>
-                        <li><b>Subject:</b> {subject_line}</li>
-                        <li><b>Send at (UTC):</b> {scheduled_dt.isoformat()}</li>
-                      </ul>
-                    </body></html>
-                    """
-                    c_success, c_code, c_msg = send_email([confirm_to], confirm_subject, confirm_body, is_html=True)
-
-                    # Check email log
-                    clog = EmailLog(
-                        recipients=confirm_to,
-                        subject_line=confirm_subject,
-                        body=confirm_body,
-                        is_html=True,
-                        status="sent" if c_success else "failed",
-                        status_code=c_code,
-                        sent_at=datetime.now(timezone.utc) if c_success else None,
-                    )
-                    db.add(clog)
-                    db.commit()
-            except Exception as ce:
-                print(f"[send-timed-email] confirmation error: {ce}")
-
-        finally:
-            db.close()
-
+                    try:
+                        c_subject_line = f"[EmailService] Complete your appointment! - {schedule_id}"
+                        c_body = f""" 
+                        <html><body> 
+                            <h3>Your appointment has been successfully created</h3> 
+                            <ul> 
+                                <li><b>Schedule ID:</b> {schedule_id}</li> 
+                                <li><b>Recipients:</b> {", ".join(recipients)}</li> 
+                                <li><b>Subject:</b> {subject_line}</li> 
+                                <li><b>Send at (UTC):</b> {scheduled_dt.isoformat()}</li> 
+                            </ul> 
+                        </body></html>
+                        """
+                        c_success, c_code, c_msg = send_email([confirm_to], c_subject_line, c_body, is_html=True)
+                        
+                        # Log
+                        save_email_log(db, [confirm_to], c_subject_line, c_body, True, c_success, c_code)
+                    except Exception as e:
+                        print(f"[send-timed-email] Confirmation error: {e}")
         payload = {
             "status": "success",
             "message": "Timed email created successfully",
@@ -310,7 +279,6 @@ def send_timed_email_endpoint():
         if used_legacy:
             payload["hint"] = "Use 'recipients' instead of legacy 'recipiants'."
         return jsonify(payload), 201
-
     except Exception as e:
         print(f"[send-timed-email] error: {e}")
         return jsonify({"status": "failed", "message": "Failed to schedule email", "statusCode": 500}), 500
@@ -332,16 +300,12 @@ def check_scheduled_email(schedule_id: str):
             "email_status": "string",           # status of the email
             "scheduled_time": "string",         # when the email is scheduled to be sent out
             "sent_at": "string"                 # when the email was sent out (if has been already)
+            }
     """
     try:
-        db = get_db()
-        try:
-            email = db.query(ScheduledEmail).filter(
-                ScheduledEmail.schedule_id == schedule_id
-            ).first()
-        finally:
-            db.close()
-
+        with get_db() as db:
+            email = find_in_db(db, ScheduledEmail, schedule_id=schedule_id)
+            
         if not email:
             return jsonify({"status": "failed", "message": "Schedule ID not found", "statusCode": 404}), 404
 
@@ -357,11 +321,23 @@ def check_scheduled_email(schedule_id: str):
         print(f"[check-scheduled-email] error: {e}")
         return jsonify({"status": "failed", "message": "Error checking email status", "statusCode": 500}), 500
 
-'''
+"""
+@app.route("/unsubscribe")
+def unsubscribe():
+    email = request.args.get("email")
+    if not email:
+        return jsonify({"message": "Error: Missing email parameter"}), 400
 
-UI routes
-
-'''
+    with get_db() as db:
+        if unsubscribe_email(db, email):
+            return jsonify({"message": f"{email} unsubscribed successfully."}), 200
+        else:
+            return jsonify({"message": "You are already unsubscribed."}), 200
+"""
+            
+# ------------------------
+#   UI ROUTES
+# ------------------------
 
 adminCode = os.getenv("ADMIN_CODE")
 
@@ -376,7 +352,6 @@ def friendly_datetime(value, format="%B %d, %Y at %I:%M %p"):
     Returns:
         str: The formatted dateTime string 
     """
-    from datetime import datetime
     if not value:
         return "NULL"
     if isinstance(value, str):
@@ -434,22 +409,17 @@ def adminPannel(access_code):
     if view is None:
         # Redirect to same route with view="emails"
         return redirect(url_for("adminPannel", access_code=access_code, view="emails"))
-    if view == "emails":
-        db = get_db()
-        try:
-            data = db.query(EmailLog).all()
-        finally:
-            db.close()
-        return render_template("admin-emailsView.html", email_data=data, access_code=access_code)
-    elif view == "timed_emails":
-        db = get_db()
-        try:
-            data = db.query(ScheduledEmail).all()
-        finally:
-            db.close()
-        return render_template("admin-timedEmailsView.html", email_data=data, access_code=access_code)
-    elif view == "test_email":
-        return render_template("admin-testEmailView.html", access_code=access_code)
+    with get_db() as db:
+        if view == "emails":
+            data = db.query(EmailLog).all()  # All email logs
+            return render_template("admin-emailsView.html", email_data=data, access_code=access_code)
+
+        elif view == "timed_emails":
+            data = db.query(ScheduledEmail).all()  # All scheduled emails
+            return render_template("admin-timedEmailsView.html", email_data=data, access_code=access_code)
+
+        elif view == "test_email":
+            return render_template("admin-testEmailView.html", access_code=access_code)
 
 @app.route("/send-test-email", methods=["POST"])
 def sendTestEmail():
