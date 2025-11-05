@@ -40,6 +40,10 @@ git clone https://github.com/yourusername/email-microservice.git
 
 # Make data directory for database storage
 mkdir data
+
+# create .env file
+cd Email-Microservice
+touch .env
 ```
 Outside the created repository in your main project folder:
 ```bash
