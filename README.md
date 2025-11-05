@@ -87,7 +87,6 @@ YOUR_PROJECT
 
 In the `.env` file:
 ```properties
-DATABASE_URL="sqlite:////app_parent/data/email.db"
 EMAIL="your-email@gmail.com"
 SMTP_PASS="your-app-password"
 SMTP_SERVER="smtp.gmail.com"
