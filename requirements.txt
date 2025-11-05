@@ -1,4 +1,4 @@
-flask
-flask-cors
-dotenv
-pymongo[srv]
+Flask==3.0.0
+Flask-Cors==4.0.0
+python-dotenv==1.0.0
+SQLAlchemy==2.0.44
