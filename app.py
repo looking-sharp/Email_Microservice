@@ -1,3 +1,4 @@
+#region Imports
 from flask import Flask, jsonify, redirect, url_for, render_template, request 
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -11,13 +12,16 @@ from database import init_db, get_db, save_email_log, save_scheduled_email, find
 from models import EmailLog, ScheduledEmail
 from email_sender import send_email
 from scheduler import start_scheduler
+#endregion
 
-# Load .env
+# ------------------------
+#   LOAD ENV AND SETUP
+# ------------------------
+
 load_dotenv()
 
 app = Flask(__name__)
 
-# Allow frontend access (update origins if needed)
 allowed_origins = os.getenv("CORS_ORIGINS", "http://localhost:5173,http://localhost:5000").split(",")
 CORS(app, resources={
     r"/*": {
@@ -27,11 +31,11 @@ CORS(app, resources={
     }
 })
 
-# Initialize database and start background scheduler
-# init_db()
-# start_scheduler()
+# ------------------------
+#   HELPER FUNCTIONS
+# ------------------------
 
-def _normalize_recipients(raw: list[str]):
+def _normalize_recipients(raw: list[str]) -> list[str]:
     """ Returns a cleaned list of recipiants from an email request.
         (Trims spaces, makes lowercase, removes duplicated / empty)
     
@@ -54,7 +58,7 @@ def _normalize_recipients(raw: list[str]):
     return cleaned
 
 
-def _validate_lengths(subject_line: str, body: str):
+def _validate_lengths(subject_line: str, body: str) -> bool:
     """ Light input guardrails to keep logs and payloads reasonable.
         Limites can be adjusted as needed.
 
@@ -334,7 +338,7 @@ def unsubscribe():
         else:
             return jsonify({"message": "You are already unsubscribed."}), 200
 """
-            
+
 # ------------------------
 #   UI ROUTES
 # ------------------------

@@ -1,3 +1,4 @@
+#region imports
 import os
 from datetime import datetime, timezone
 from sqlalchemy import create_engine
@@ -5,6 +6,7 @@ from sqlalchemy.orm import sessionmaker, Session
 from dotenv import load_dotenv
 from models import Base, EmailLog, ScheduledEmail
 from contextlib import contextmanager
+#endregion
 
 # ------------------------
 #   ENV + ENGINE SETUP

@@ -1,12 +1,12 @@
+#region imports
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, Text
 from sqlalchemy.orm import declarative_base
 from datetime import datetime, timezone
+#endregion 
 
-"""
-
-This python script defines the layout of email.db 
-
-"""
+# ------------------------
+#   DB TABLE DEFINITIONS
+# ------------------------
 
 Base = declarative_base()
 

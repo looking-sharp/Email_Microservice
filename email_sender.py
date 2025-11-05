@@ -1,8 +1,14 @@
+#region imports
 import os
 import smtplib
 import datetime
 from email.message import EmailMessage
 from dotenv import load_dotenv
+#endregion
+
+# ------------------------
+#   ENV LOAD AND SETUP
+# ------------------------
 
 load_dotenv()
 
@@ -10,6 +16,10 @@ EMAIL = os.getenv("EMAIL")
 SMTP_PASS = os.getenv("SMTP_PASS")
 SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
 SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
+
+# ------------------------
+#   SEND EMAIL
+# ------------------------
 
 def send_email(recipients: list[str], subject: str, body: str, is_html: bool = False) -> tuple[bool, int, str]:
     """ Uses the SMTP information saved in the .env file to 
