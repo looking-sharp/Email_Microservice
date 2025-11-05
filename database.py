@@ -14,7 +14,18 @@ from contextlib import contextmanager
 
 load_dotenv()  # Load .env when this module is imported
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///email.db")
+# Path setup
+basedir = os.path.abspath(os.path.dirname(__file__))
+parent_dir = os.path.dirname(basedir)
+db_filename = "email.db"
+
+# Full absolute path to the database inside the container
+default_db_path = os.path.join(parent_dir, "data", db_filename)
+print(default_db_path)
+DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{default_db_path}")
+
+# Ensure folder exists
+os.makedirs(os.path.dirname(default_db_path), exist_ok=True)
 
 # Use check_same_thread only for SQLite connections
 connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
