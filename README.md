@@ -143,9 +143,11 @@ This pings the microservice to ensure it is running and ready to recieve request
 import requests
 
 def checkIsOnline() -> bool:
-  response = requests.get("http://127.0.0.1:5002/ping")
-  return response.status_code == 200
-
+    try:
+        response = requests.get("http://127.0.0.1:5002/ping", timeout=2)
+        return response.status_code == 200
+    except requests.RequestException:
+        return False
 ```
 ---
 
