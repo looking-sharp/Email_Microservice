@@ -10,6 +10,7 @@ An email microservice software to be used to contact users for various uses
   - [Database Structure](#database-structure)
 - [GET requests](#get-requests)
   - [`GET /ping`](#get-ping)
+  - [`GET /check-scheduled-email/<schedule_id>`](#get-check-scheduled-emailschedule_id)
 - [POST requests](#post-requests)
   - [`POST /send-email`](#post-send-email)
   - [`POST /send-timed-email`](#post-send-timed-email)
@@ -144,6 +145,33 @@ import requests
 def checkIsOnline() -> bool:
   response = requests.get("http://127.0.0.1:5002/ping")
   return response.status_code == 200
+
+```
+---
+
+
+### `GET /check-scheduled-email/<schedule_id>`
+This checks on the status of a scheduled email based on that email's schedule ID
+
+**Response (200)**
+```json
+{
+  "status": "success",
+  "statusCode": 200,
+  "email_status": "string",
+  "scheduled_time": "string",
+  "sent_at": "string"
+}
+```
+The sent_at field will be null if the email hasn't been sent yet
+
+**Example Code (Python)**
+```Python
+import requests
+
+def checkScheduledEmailStatus(scheduleID: str):
+  response = requests.get(f"http://127.0.0.1:5002/check-scheduled-email/{scheduleID}")
+  return response
 
 ```
 ---
