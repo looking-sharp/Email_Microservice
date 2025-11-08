@@ -162,6 +162,21 @@ This request is used to send an email using the email microservice
   "statusCode": 200
 }
 ```
+
+**Example Code (Python)**
+```python
+import requests
+
+def sendEmail():
+  package = {
+    "recipients": ["your-email@email.com"],
+    "subject_line": "This is a test email",
+    "body": "<p>This is to test the microservice.<\p>",
+    "is_html": True
+  }
+  response = requests.post("http://127.0.0.1:5002/send-email", json=package)    
+  print(response)
+```
 ---
 
 
@@ -203,5 +218,26 @@ This request is used to submit an email using the email microservice to be sent 
       "date_to_send": "string"
     }
 }
+```
+
+**Example Code (Python)**
+```python
+import requests
+from datetime import datetime, timedelta
+
+def sendTimedEmail():
+  current_datetime = datetime.now(timezone.utc)
+  # Send 5 mins in the future
+  future_datetime = current_datetime + timedelta(minutes=5)
+  package = {
+    "recipients": ["your-email@email.com"],
+    "subject_line": "This is a timed test email",
+    "body": f"<p>This email is sent 5 minutes after {current_datetime.time()}.<\p>",
+    "is_html": True,
+    "time_to_send": str(current_datetime.date()),
+    "date_to_send": str(future_datetime.time())
+  }
+  response = requests.post("http://127.0.0.1:5002/send-timed-email", json=package)    
+  print(response)
 ```
 ---
