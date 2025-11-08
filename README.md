@@ -9,6 +9,7 @@ An email microservice software to be used to contact users for various uses
 - [Backend Information](#backend-information)
   - [Database Structure](#database-structure)
 - [GET requests](#get-requests)
+  - [`GET /ping`](#get-ping)
 - [POST requests](#post-requests)
   - [`POST /send-email`](#post-send-email)
   - [`POST /send-timed-email`](#post-send-timed-email)
@@ -124,6 +125,28 @@ See models.py for more information
 
 ## GET requests
 All the GET requests our microservice allows
+
+### `GET /ping`
+This pings the microservice to ensure it is running and ready to recieve requests
+
+**Response (200):**
+```json
+{
+  "status": "ok",
+  "service": "email-microservice"
+}
+```
+
+**Example Code (Python)**
+``` python
+import requests
+
+def checkIsOnline() -> bool:
+  response = requests.get("http://127.0.0.1:5002/ping")
+  return response.status_code == 200
+
+```
+---
 
 ## POST requests
 All the POST requests our microservice allows
