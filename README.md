@@ -302,4 +302,4 @@ See [models.py](models.py) for more information
 ![Client UML Email Microservice](images/ClientUMLEmailMicroservice.png)
 
 ### Admin UML Diagram
-![Admin UML Email Microservice](images/AdminUMLEmailMicroservice.png)
+![Admin UML Email Microservice](images/AdminUMLEmailMicroservice(1).png)
