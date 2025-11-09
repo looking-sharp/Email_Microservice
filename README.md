@@ -6,14 +6,16 @@ An email microservice software to be used to contact users for various uses
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
   - [Run](#run)
-- [Backend Information](#backend-information)
-  - [Database Structure](#database-structure)
 - [GET requests](#get-requests)
   - [`GET /ping`](#get-ping)
   - [`GET /check-scheduled-email/<schedule_id>`](#get-check-scheduled-emailschedule_id)
 - [POST requests](#post-requests)
   - [`POST /send-email`](#post-send-email)
   - [`POST /send-timed-email`](#post-send-timed-email)
+- [Backend Information](#backend-information)
+  - [Database Structure](#database-structure)
+  - [Client UML Diagram](#client-uml-diagram)
+  - [Admin UML Diagram](#admin-uml-diagram)
 
 
 ## Features
@@ -117,12 +119,6 @@ Or if you have built it,
 docker-compose up --no-build email-microservice
 ```
 
-## Backend Information
-
-### Database Structure
-![Email Microservice RS](images/Email%20Microservice%20RS.png)
-Data is stored using sqlite and is interacted with through SQLAlchemy \
-See [models.py](models.py) for more information
 
 ## GET requests
 All the GET requests our microservice allows
@@ -294,3 +290,16 @@ def sendTimedEmail():
   print(response)
 ```
 ---
+
+## Backend Information
+
+### Database Structure
+![Email Microservice RS](images/Email%20Microservice%20RS.png)
+Data is stored using sqlite and is interacted with through SQLAlchemy \
+See [models.py](models.py) for more information
+
+### Client UML Diagram
+![Client UML Email Microservice](images/ClientUMLEmailMicroservice.png)
+
+### Admin UML Diagram
+![Admin UML Email Microservice](images/AdminUMLEmailMicroservice.png)
