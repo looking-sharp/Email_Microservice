@@ -443,36 +443,47 @@ def sendTestEmail():
         requests depending on if form.is_timed is provided.
     """
     print(request.method)
-    print(request.form)
-    recipient = request.form.get("recipiant")
-    is_timed = "is_timed" in request.form
-    if not is_timed:
-        package = {
-            "recipients": [recipient],
-            "subject_line": request.form.get("subject"),
-            "body": request.form.get("body"),
-            "is_html": True
-        }
-        response = requests.post("http://127.0.0.1:5002/send-email", json=package)    
+
+    try:
+        data = request.get_json(force=True, silent=True) or {}
+        print(data)
+        recipient = data.get("recipient")
+        subject = data.get("subject")
+        body = data.get("body")
+        is_timed = data.get("is_timed", False)
+
+        if not recipient or not subject or not body:
+            return jsonify({"error": "recipient, subject, and body are required"}), 400
+        if not is_timed:
+            package = {
+                "recipients": [recipient],
+                "subject_line": subject,
+                "body": body,
+                "is_html": True
+            }
+            response = requests.post("http://127.0.0.1:5002/send-email", json=package)
+        else:
+            time_to_send = data.get("time_to_send")
+            date_to_send = data.get("date_to_send")
+            if not time_to_send or not date_to_send:
+                return jsonify({"error": "time_to_send and date_to_send required for timed email"}), 400
+            package = {
+                "recipients": [recipient],
+                "subject_line": subject,
+                "body": body,
+                "is_html": True,
+                "time_to_send": time_to_send,
+                "date_to_send": date_to_send
+            }
+            response = requests.post("http://127.0.0.1:5002/send-timed-email", json=package)
         try:
             return jsonify(response.json()), response.status_code
         except ValueError:
             return response.text, response.status_code
-    else:
-        package = {
-            "recipients": [recipient],
-            "subject_line": request.form.get("subject"),
-            "body": request.form.get("body"),
-            "is_html": True,
-            "time_to_send": request.form.get("schedule_for_time"),
-            "date_to_send": request.form.get("schedule_for_date")
-        }
-        
-        response = requests.post("http://127.0.0.1:5002/send-timed-email", json=package)    
-        try:
-            return jsonify(response.json()), response.status_code
-        except ValueError:
-            return response.text, response.status_code
+    except Exception as e:
+        return jsonify({"status": "failed", "message": "Error sending test email", "statusCode": 500}), 500
+    
+    
 
 if __name__ == "__main__":
     # Init DB and start background scheduler only when running the app directly

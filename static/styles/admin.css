@@ -328,3 +328,34 @@ input[type=checkbox]:checked::before {
     margin-inline-end: 0px !important;
     unicode-bidi: isolate !important;
 }
+
+.response-div {
+    width: 300px;
+}
+
+.response-div h2{
+    margin-bottom:0;
+    margin-top: 30px;
+}
+
+.form-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    justify-content: center;
+    width: fit-content;
+    margin: auto;
+    margin-bottom: 30px;
+}
+
+pre {
+    background: #1e1e1e;
+    color: #c0c0c0;
+    border-radius: 5px;
+    min-width: 300px;
+    max-width: 400px;
+    white-space: pre-wrap;
+    overflow-x: auto;
+    flex-shrink: 0;
+    word-break: break-all;
+}

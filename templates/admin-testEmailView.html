@@ -13,55 +13,62 @@
         <li class="tabs-menu-item is-active" role="presentation">
             <a tabindex="-1" title="Send Test Email View" aria-selected="false" role="tab" data-tab-index="2">Send Test Email</a></li>
     </ul>
-    <form id="emailForm" method="POST" action="/send-test-email" class="test-email">
-    
-    <label for="subject" title="The subject of your email">Subject:</label>
-    <input type="text" id="subject" name="subject" required> <br>
+    <div class="form-container">
+      <div id="email-form-holder">
+      <form id="emailForm" class="test-email">
+      
+      <label for="subject" title="The subject of your email">Subject:</label>
+      <input type="text" id="subject" name="subject" required> <br>
 
-    <label for="recipiant" title="The recipiant of your email">Recipiant:</label>
-    <input type="email" id="recipiant" name="recipiant" required> <br>
+      <label for="recipiant" title="The recipiant of your email">Recipiant:</label>
+      <input type="email" id="recipiant" name="recipiant" required> <br>
 
-    <label for="body">Body:</label>
-    <input type="hidden" name="body" id="emailBody">
-    <div id="editor-container">
-      <div id="editor"></div>
-      <script src="https://cdn.quilljs.com/1.3.7/quill.js"></script>
-      <script>
-        var quill = new Quill('#editor', {
-          theme: 'snow',
-          modules: {
-            toolbar: [
-              [{ 'header': [1, 2, false] }],
-              ['bold', 'italic', 'underline', 'strike'],
-              [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-              ['link', 'image'],
-              ['clean']
-            ]
-          }
-        });
-      </script>
+      <label for="body">Body:</label>
+      <input type="hidden" name="body" id="emailBody">
+      <div id="editor-container">
+        <div id="editor"></div>
+        <script src="https://cdn.quilljs.com/1.3.7/quill.js"></script>
+        <script>
+          var quill = new Quill('#editor', {
+            theme: 'snow',
+            modules: {
+              toolbar: [
+                [{ 'header': [1, 2, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                ['link', 'image'],
+                ['clean']
+              ]
+            }
+          });
+        </script>
+      </div>
+
+      <div class="checkHolder">
+        <label for="is_timed">Timed Email: </label>
+        <input type="checkbox" id="is_timed" name="is_timed">
+      </div><br>
+
+      <div class="timed_section">
+        <p>Send on:</p>
+        <input type="date" id="schedule_for_date" name="schedule_for_date">
+        <p>at</p>
+        <input type="time" id="schedule_for_time" name="schedule_for_time">
+        <select id="timezone" name="timezone">
+          <option value="UTC">UTC</option>
+          <option value="America/Los_Angeles">PST (America/Los_Angeles)</option>
+          <option value="America/New_York">EST (America/New_York)</option>
+          <option value="Europe/London">London (Europe/London)</option>
+          <option value="Asia/Tokyo">Tokyo (Asia/Tokyo)</option>
+        </select>
+      </div>
+
+      <button type="submit">Send Email</button>
     </div>
-
-    <div class="checkHolder">
-      <label for="is_timed">Timed Email: </label>
-      <input type="checkbox" id="is_timed" name="is_timed">
-    </div><br>
-
-    <div class="timed_section">
-      <p>Send on:</p>
-      <input type="date" id="schedule_for_date" name="schedule_for_date">
-      <p>at</p>
-      <input type="time" id="schedule_for_time" name="schedule_for_time">
-      <select id="timezone" name="timezone">
-        <option value="UTC">UTC</option>
-        <option value="America/Los_Angeles">PST (America/Los_Angeles)</option>
-        <option value="America/New_York">EST (America/New_York)</option>
-        <option value="Europe/London">London (Europe/London)</option>
-        <option value="Asia/Tokyo">Tokyo (Asia/Tokyo)</option>
-      </select>
+    <div class="response-div">
+      <h2>Response</h2><br>
+      <pre id="Response">{}</pre>
     </div>
-
-
-    <button type="submit">Send Email</button>
+    </div>
     <script src="{{ url_for('static',filename='scripts/testEmail.js') }}"></script>
 </body>
