@@ -62,8 +62,11 @@ function filter() {
     }
 
     // Split by ":" and remove quotes / "INCLUDES"
-    const queryFormatted = query.split(":").map(substr => substr.replace(/"/g, "").replace("INCLUDES", "").trim());
-    const key = queryFormatted[0]; // e.g. status_code
+    const queryFormatted = query.split(/:(.+)/).map(substr => substr.replace(/"/g, "").replace("INCLUDES", "").trim());
+    let key = queryFormatted[0]; // e.g. status_code
+    if (key == "created_at") {
+        key = "created_at_formatted";
+    }
     const value = queryFormatted[1] ? queryFormatted[1].toLowerCase() : ""; // e.g. 200
     const partial = query.toUpperCase().includes("INCLUDES");
     console.log(`Looking for ${partial ? "partial" : "exact"} match for ${key} with value ${value}`)
