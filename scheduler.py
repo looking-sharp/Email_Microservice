@@ -1,13 +1,13 @@
 import threading
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 from database import get_db, save_email_log
-from models import ScheduledEmail
+from models import ScheduledEmail, EmailLog
 from email_sender import send_email
 
 CHECK_INTERVAL_SECONDS = 60  # Check each 60 seconds
-
+PURGE_DAYS = 7               # Purge emails sent after this many days
 
 def _fetch_due_scheduled_emails(db):
     """ Gets the scheduled emails where the scheduled_time is now or already happened
@@ -68,7 +68,20 @@ def _process_single_email(db, scheduled: ScheduledEmail):
     if not log_success:
         print(f"[scheduler] Failed to log scheduled email {scheduled.schedule_id}")
 
-    
+def purge_logs(db):
+    purge_date = datetime.now(timezone.utc) - timedelta(days=PURGE_DAYS)
+
+    #Delete all logs after purge date
+    db.query(EmailLog).filter(
+        EmailLog.sent_at <= purge_date
+    ).delete()
+
+    db.query(ScheduledEmail).filter(
+        ScheduledEmail.sent_at.isnot(None),
+        ScheduledEmail.sent_at <= purge_date
+    ).delete()
+
+    db.commit()
 
 
 def check_scheduled_emails_loop():
@@ -92,6 +105,8 @@ def check_scheduled_emails_loop():
                 except Exception as inner:
                     db.rollback()
                     print(f"[scheduler] processing error: {inner}")
+                
+                purge_logs(db)
 
         except Exception as outer:
             print(f"[scheduler] unexpected error: {outer}")
