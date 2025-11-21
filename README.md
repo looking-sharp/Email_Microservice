@@ -7,7 +7,7 @@ An email microservice software to be used to contact users for various uses
   - [Installation](#installation)
   - [Run](#run)
 - [GET requests](#get-requests)
-  - [`GET /ping`](#get-ping)
+  - [`GET /health`](#get-health)
   - [`GET /check-scheduled-email/<schedule_id>`](#get-check-scheduled-emailschedule_id)
 - [POST requests](#post-requests)
   - [`POST /send-email`](#post-send-email)
@@ -123,7 +123,7 @@ docker-compose up --no-build email-microservice
 ## GET requests
 All the GET requests our microservice allows
 
-### `GET /ping`
+### `GET /health`
 This pings the microservice to ensure it is running and ready to recieve requests
 
 **Response (200):**
@@ -140,7 +140,7 @@ import requests
 
 def checkIsOnline() -> bool:
     try:
-        response = requests.get("http://127.0.0.1:5002/ping", timeout=2)
+        response = requests.get("http://127.0.0.1:5002/health", timeout=2)
         return response.status_code == 200
     except requests.RequestException:
         return False

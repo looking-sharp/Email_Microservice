@@ -82,8 +82,8 @@ def _validate_lengths(subject_line: str, body: str) -> bool:
 #   API CALLS
 # ------------------------
 
-@app.get("/ping")
-def ping():
+@app.get("/health")
+def health():
     """Check if the service is running."""
     return jsonify({"status": "ok", "service": "email-microservice"}), 200
 
